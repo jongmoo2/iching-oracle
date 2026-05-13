@@ -1,9 +1,7 @@
 import streamlit as st
 import streamlit.components.v1 as components
-import os
-import json
+import re
 
-# 페이지 설정
 st.set_page_config(
     page_title="주역점 - 하늘과 땅의 이치를 묻다",
     page_icon="☯️",
@@ -11,12 +9,20 @@ st.set_page_config(
     initial_sidebar_state="collapsed"
 )
 
-# Secrets에서 API 키 가져오기 (배포용)
-# 로컬 테스트 시에는 .streamlit/secrets.toml에 GEMINI_API_KEY="값" 필요
+# Streamlit 기본 UI 완전 숨기기
+st.markdown("""
+    <style>
+    .stApp { background-color: #0a0a0f; }
+    #MainMenu, footer, header { visibility: hidden; }
+    .block-container { padding: 0 !important; max-width: 100% !important; }
+    iframe { border: none !important; }
+    </style>
+""", unsafe_allow_html=True)
+
+# Secrets에서 API 키 (없으면 빈 문자열)
 api_key = st.secrets.get("GEMINI_API_KEY", "")
 
 def load_app():
-    # 파일 읽기
     with open("index.html", "r", encoding="utf-8") as f:
         html = f.read()
     with open("style.css", "r", encoding="utf-8") as f:
@@ -28,38 +34,42 @@ def load_app():
     with open("script.js", "r", encoding="utf-8") as f:
         script_js = f.read()
 
-    # HTML 내부에 리소스 주입 (Streamlit 컴포넌트 특성상 인라인이 가장 안정적임)
+    # CSS 인라인 주입
     html = html.replace('<link rel="stylesheet" href="style.css">', f'<style>{css}</style>')
-    
-    # 스크립트 주입 및 API 키 전달 로직 추가
-    # 스크립트 태그들을 하나로 합쳐서 주입
+
+    # body의 justify-content: center 제거 → 화면 밀림 방지
+    # (iframe은 자체 스크롤이 있으므로 수직 중앙정렬 불필요)
+    css_fix = """
+    <style>
+    body {
+        justify-content: flex-start !important;
+        padding-top: 2rem;
+    }
+    </style>
+    """
+
+    # JS 통합 주입 (API 키 포함)
     combined_js = f"""
     <script>
+        // Streamlit에서 주입한 API 키
+        window.STREAMLIT_API_KEY = "{api_key}";
         {data_js}
         {dict_js}
-        // Streamlit에서 넘겨준 API 키를 전역 변수로 설정
-        window.STREAMLIT_API_KEY = "{api_key}";
         {script_js}
     </script>
     """
-    
-    # 기존 script src 태그들 제거 및 통합 스크립트 삽입
-    import re
-    html = re.sub(r'<script src="data.js"></script>', '', html)
-    html = re.sub(r'<script src="dictionary.js"></script>', '', html)
-    html = re.sub(r'<script src="script.js"></script>', combined_js, html)
+
+    # 기존 script 태그 제거 후 통합본 삽입
+    html = re.sub(r'<script src="data\.js"></script>', '', html)
+    html = re.sub(r'<script src="dictionary\.js"></script>', '', html)
+    html = re.sub(r'<script src="script\.js"></script>', combined_js, html)
+
+    # body 닫기 전에 CSS 오버라이드 삽입
+    html = html.replace('</body>', css_fix + '</body>')
 
     return html
 
-# 메인 화면
-st.markdown("""
-    <style>
-    .stApp { background-color: #0a0a0f; }
-    #MainMenu {visibility: hidden;}
-    footer {visibility: hidden;}
-    header {visibility: hidden;}
-    </style>
-""", unsafe_allow_html=True)
-
 app_html = load_app()
-components.html(app_html, height=1500, scrolling=True)
+
+# 높이를 넉넉하게 설정 (스크롤 허용)
+components.html(app_html, height=2200, scrolling=True)
