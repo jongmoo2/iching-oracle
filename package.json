@@ -1,0 +1,7 @@
+{
+  "name": "i-ching-oracle",
+  "version": "1.0.0",
+  "scripts": {
+    "start": "npx serve ."
+  }
+}

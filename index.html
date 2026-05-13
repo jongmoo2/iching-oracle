@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>주역점 - 신비로운 운세</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <div class="container">
+        <header>
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+                <div>
+                    <h1>周易占</h1>
+                    <p class="subtitle">하늘과 땅의 이치를 묻다</p>
+                </div>
+                <button class="btn-mystic" onclick="setupGeminiKey()" style="font-size: 0.8rem; padding: 5px 10px;">API 키 설정</button>
+            </div>
+        </header>
+
+        <main>
+            <!-- 모드 탭 -->
+            <div class="mode-tabs">
+                <button class="mode-tab active" id="tab-random" onclick="switchMode('random')">
+                    <span class="tab-icon">⚂</span>
+                    <span class="tab-label">자동작괘 <small>주사위</small></span>
+                </button>
+                <button class="mode-tab" id="tab-manual" onclick="switchMode('manual')">
+                    <span class="tab-icon">☯</span>
+                    <span class="tab-label">수동작괘 <small>직접선택</small></span>
+                </button>
+                <button class="mode-tab" id="tab-situation" onclick="switchMode('situation')">
+                    <span class="tab-icon">🌸</span>
+                    <span class="tab-label">상황작괘 <small>매화역수</small></span>
+                </button>
+            </div>
+
+            <!-- 수동 입력 영역 -->
+            <div id="manual-area" class="manual-area" style="display:none;">
+                <div class="manual-selectors">
+                    <div class="selector-group">
+                        <div class="selector-label">上卦 <span class="selector-label-ko">(상괘)</span></div>
+                        <div class="trigram-buttons" id="upper-buttons">
+                            <button class="trigram-btn"
+                                onclick="selectTrigram('upper',1)">☰<br><span>乾·天</span></button>
+                            <button class="trigram-btn"
+                                onclick="selectTrigram('upper',2)">☱<br><span>兌·澤</span></button>
+                            <button class="trigram-btn"
+                                onclick="selectTrigram('upper',3)">☲<br><span>離·火</span></button>
+                            <button class="trigram-btn"
+                                onclick="selectTrigram('upper',4)">☳<br><span>震·雷</span></button>
+                            <button class="trigram-btn"
+                                onclick="selectTrigram('upper',5)">☴<br><span>巽·風</span></button>
+                            <button class="trigram-btn"
+                                onclick="selectTrigram('upper',6)">☵<br><span>坎·水</span></button>
+                            <button class="trigram-btn"
+                                onclick="selectTrigram('upper',7)">☶<br><span>艮·山</span></button>
+                            <button class="trigram-btn"
+                                onclick="selectTrigram('upper',8)">☷<br><span>坤·地</span></button>
+                        </div>
+                    </div>
+                    <div class="selector-group">
+                        <div class="selector-label">下卦 <span class="selector-label-ko">(하괘)</span></div>
+                        <div class="trigram-buttons" id="lower-buttons">
+                            <button class="trigram-btn"
+                                onclick="selectTrigram('lower',1)">☰<br><span>乾·天</span></button>
+                            <button class="trigram-btn"
+                                onclick="selectTrigram('lower',2)">☱<br><span>兌·澤</span></button>
+                            <button class="trigram-btn"
+                                onclick="selectTrigram('lower',3)">☲<br><span>離·火</span></button>
+                            <button class="trigram-btn"
+                                onclick="selectTrigram('lower',4)">☳<br><span>震·雷</span></button>
+                            <button class="trigram-btn"
+                                onclick="selectTrigram('lower',5)">☴<br><span>巽·風</span></button>
+                            <button class="trigram-btn"
+                                onclick="selectTrigram('lower',6)">☵<br><span>坎·水</span></button>
+                            <button class="trigram-btn"
+                                onclick="selectTrigram('lower',7)">☶<br><span>艮·山</span></button>
+                            <button class="trigram-btn"
+                                onclick="selectTrigram('lower',8)">☷<br><span>坤·地</span></button>
+                        </div>
+                    </div>
+                    <div class="selector-group">
+                        <div class="selector-label">動爻 <span class="selector-label-ko">(동효)</span></div>
+                        <div class="moving-buttons" id="moving-buttons">
+                            <button class="moving-btn" onclick="selectMoving(1)">初爻<br><span>1효</span></button>
+                            <button class="moving-btn" onclick="selectMoving(2)">二爻<br><span>2효</span></button>
+                            <button class="moving-btn" onclick="selectMoving(3)">三爻<br><span>3효</span></button>
+                            <button class="moving-btn" onclick="selectMoving(4)">四爻<br><span>4효</span></button>
+                            <button class="moving-btn" onclick="selectMoving(5)">五爻<br><span>5효</span></button>
+                            <button class="moving-btn" onclick="selectMoving(6)">上爻<br><span>6효</span></button>
+                        </div>
+                    </div>
+                </div>
+                <div class="manual-status" id="manual-status">상괘를 선택하십시오.</div>
+                <div class="controls">
+                    <button id="manual-submit-btn" class="btn-mystic" onclick="submitManual()" disabled>괘 완성</button>
+                    <button id="manual-reset-btn" class="btn-mystic" style="display:none;" onclick="resetManual()">다시
+                        고르기</button>
+                </div>
+            </div>
+
+            <!-- 상황작괘 영역 (Situation Divination Area) -->
+            <div id="situation-area" class="situation-area" style="display:none;">
+                <div class="situation-input-group">
+                    <label for="situation-text" class="situation-label">현재 상황이나 궁금한 점을 구체적으로 적어주세요:</label>
+                    <textarea id="situation-text" class="situation-textarea" rows="4" placeholder="예) 갈색 고양이가 길 건너편에서 3번 울고 가는데 약간 친밀함이 느껴졌어."></textarea>
+                </div>
+                <div class="controls">
+                    <button id="situation-submit-btn" class="btn-mystic" onclick="submitSituation()">작괘하기 (作卦)</button>
+                </div>
+            </div>
+
+            <div class="divination-area">
+                <!-- Original Hexagram (본괘) -->
+                <div id="original-container" class="hexagram-container" style="display: none;">
+                    <div class="hexagram-title">本卦 (본괘)</div>
+                    <div id="original-visual" class="hexagram-visual"></div>
+                    <div class="hexagram-info">
+                        <span id="original-name"></span>
+                        <span id="original-hanja" class="hexagram-name-hanja"></span>
+                    </div>
+                </div>
+
+                <!-- Transformed Hexagram (지괘) -->
+                <div id="transformed-container" class="hexagram-container" style="display: none;">
+                    <div class="hexagram-title">之卦 (지괘)</div>
+                    <div id="transformed-visual" class="hexagram-visual"></div>
+                    <div class="hexagram-info">
+                        <span id="transformed-name"></span>
+                        <span id="transformed-hanja" class="hexagram-name-hanja"></span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="status-msg" id="status-msg">경건한 마음으로 아래 버튼을 눌러 점을 치십시오.</div>
+
+            <div class="controls" id="random-controls">
+                <button id="draw-btn" class="btn-mystic">상괘 뽑기</button>
+                <button id="reset-btn" class="btn-mystic" style="display: none;">다시 치기</button>
+            </div>
+
+            <!-- 해설 영역 (Interpretation Area) -->
+            <div id="interpretation-container" class="interpretation-container" style="display: none;">
+                <h3>오늘의 점괘 해설</h3>
+                <div id="properties-container" class="properties-container"></div>
+                <div id="rationale-text" class="rationale-text" style="display: none; background-color: rgba(255, 215, 0, 0.1); border-left: 4px solid #d4af37; padding: 15px; margin: 20px 0; font-size: 0.95em; line-height: 1.6;"></div>
+                <div id="interpretation-text" class="interpretation-text"></div>
+                
+                <div id="ai-loading" style="display: none; text-align: center; margin: 20px 0;">
+                    <div class="spinner" style="display: inline-block; width: 30px; height: 30px; border: 3px solid rgba(255,215,0,0.3); border-radius: 50%; border-top-color: #d4af37; animation: spin 1s ease-in-out infinite;"></div>
+                    <p style="margin-top: 10px; color: #d4af37;">제미나이가 괘를 풀이하고 있습니다...</p>
+                </div>
+                
+                <div id="ai-interpretation" style="display: none; background-color: rgba(0, 0, 0, 0.3); border: 1px solid #d4af37; padding: 20px; margin-top: 20px; border-radius: 8px;">
+                    <h4 style="color: #d4af37; margin-top: 0; border-bottom: 1px dashed rgba(212, 175, 55, 0.5); padding-bottom: 10px;">🤖 AI 현대적 해설</h4>
+                    <div id="ai-text" style="line-height: 1.6; font-size: 0.95rem;"></div>
+                </div>
+                
+                <div class="controls" id="ai-controls" style="margin-top: 20px; display: none;">
+                    <button class="btn-mystic" onclick="requestAIInterpretation()">AI 해설 보기</button>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="data.js"></script>
+    <script src="dictionary.js"></script>
+    <script src="script.js"></script>
+</body>
+
+</html>
