@@ -76,40 +76,25 @@ const interpretationContainer = document.getElementById('interpretation-containe
 const interpretationText = document.getElementById('interpretation-text');
 
 // --- Gemini API Configuration ---
-const GEMINI_API_URL = "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent";
+const GEMINI_API_URL = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent";
 
 function getGeminiApiKey() {
-    // Streamlit에서 주입한 API 키 우선 사용
-    if (window.STREAMLIT_API_KEY && window.STREAMLIT_API_KEY.trim()) {
-        return window.STREAMLIT_API_KEY.trim();
-    }
-    // 로컬 환경: localStorage 사용
-    try {
-        let key = localStorage.getItem('gemini_api_key');
-        if (!key) {
-            key = prompt("Google AI Studio에서 발급받은 Gemini API 키를 입력해주세요.\n(키는 브라우저에만 저장되며 외부로 전송되지 않습니다.)");
-            if (key) localStorage.setItem('gemini_api_key', key.trim());
+    let key = localStorage.getItem('gemini_api_key');
+    if (!key) {
+        key = prompt("Google AI Studio에서 발급받은 Gemini API 키를 입력해주세요.\n(키는 브라우저에만 저장되며 외부로 전송되지 않습니다.)");
+        if (key) {
+            localStorage.setItem('gemini_api_key', key.trim());
         }
-        return key;
-    } catch(e) {
-        return null;
     }
+    return key;
 }
 
 function setupGeminiKey() {
-    if (window.STREAMLIT_API_KEY && window.STREAMLIT_API_KEY.trim()) {
-        alert("Streamlit 배포 환경에서는 API 키가 서버 Secrets에서 자동으로 주입됩니다.");
-        return;
-    }
-    try {
-        const currentKey = localStorage.getItem('gemini_api_key') || "";
-        const newKey = prompt("Gemini API 키를 입력하세요:", currentKey);
-        if (newKey !== null) {
-            localStorage.setItem('gemini_api_key', newKey.trim());
-            alert("API 키가 저장되었습니다.");
-        }
-    } catch(e) {
-        alert("이 환경에서는 API 키를 직접 설정할 수 없습니다. Streamlit Secrets를 사용해주세요.");
+    const currentKey = localStorage.getItem('gemini_api_key') || "";
+    const newKey = prompt("Gemini API 키를 입력하세요:", currentKey);
+    if (newKey !== null) {
+        localStorage.setItem('gemini_api_key', newKey.trim());
+        alert("API 키가 저장되었습니다.");
     }
 }
 
@@ -129,8 +114,7 @@ async function callGeminiAPI(promptText) {
                 parts: [{ text: promptText }]
             }],
             generationConfig: {
-                temperature: 0.7,
-                responseMimeType: "application/json"
+                temperature: 0.7
             }
         })
     });
@@ -629,4 +613,4 @@ function reset() {
     if(document.getElementById('ai-loading')) document.getElementById('ai-loading').style.display = 'none';
 }
 
-document.addEventListener('DOMContentLoaded', init);
+init();
