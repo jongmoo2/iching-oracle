@@ -629,4 +629,4 @@ function reset() {
     if(document.getElementById('ai-loading')) document.getElementById('ai-loading').style.display = 'none';
 }
 
-init();
+document.addEventListener('DOMContentLoaded', init);
