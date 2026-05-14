@@ -448,10 +448,14 @@ function showInterpretation() {
             const u = divinationData.upper;
             const l = divinationData.lower;
             const m = divinationData.moving;
-            const searchParams = `?interpret_upper=${u}&interpret_lower=${l}&interpret_moving=${m}`;
+            // 부모 창(스트림릿 앱)의 주소를 확실하게 찾기
+            let baseUrl = document.referrer.split('?')[0];
+            if (!baseUrl || baseUrl === "") baseUrl = "./";
             
-            // 버튼을 <a> 링크로 교체하여 브라우저 보안 차단을 완벽히 우회
-            aiControls.innerHTML = `<a href="${searchParams}" target="_top" class="btn-mystic" style="text-decoration:none; display:inline-block; text-align:center; width:100%; box-sizing:border-box;">AI 해설 보기</a>`;
+            const targetUrl = baseUrl + searchParams;
+            
+            // 버튼을 <a> 링크로 교체 (target="_top"으로 부모 창 제어)
+            aiControls.innerHTML = `<a href="${targetUrl}" target="_top" class="btn-mystic" style="text-decoration:none; display:inline-block; text-align:center; width:100%; box-sizing:border-box;">AI 해설 보기</a>`;
             aiControls.style.display = 'block';
         }
     }
