@@ -439,6 +439,23 @@ function showInterpretation() {
 
     interpretationText.innerText = "【 괘사 (卦辭) 】\n" + gwaesaText + "\n\n【 동효 (動爻) 】\n" + hyosaText;
 
+    // AI 관련 초기화 (상황작괘가 아닐 경우 버튼 표시)
+    if (currentMode !== 'situation') {
+        if (document.getElementById('ai-interpretation')) document.getElementById('ai-interpretation').style.display = 'none';
+        
+        const aiControls = document.getElementById('ai-controls');
+        if (aiControls) {
+            const u = divinationData.upper;
+            const l = divinationData.lower;
+            const m = divinationData.moving;
+            const searchParams = `?interpret_upper=${u}&interpret_lower=${l}&interpret_moving=${m}`;
+            
+            // 버튼을 <a> 링크로 교체하여 브라우저 보안 차단을 완벽히 우회
+            aiControls.innerHTML = `<a href="${searchParams}" target="_top" class="btn-mystic" style="text-decoration:none; display:inline-block; text-align:center; width:100%; box-sizing:border-box;">AI 해설 보기</a>`;
+            aiControls.style.display = 'block';
+        }
+    }
+
     // 2. 물상표 구성
     if (typeof TRIGRAM_PROPERTIES !== 'undefined') {
         let changedTrigramIdx = null;
@@ -492,28 +509,23 @@ function showInterpretation() {
     // AI 관련 초기화 (상황작괘가 아닐 경우 버튼 표시)
     if (currentMode !== 'situation') {
         if (document.getElementById('ai-interpretation')) document.getElementById('ai-interpretation').style.display = 'none';
-        if (document.getElementById('ai-controls')) document.getElementById('ai-controls').style.display = 'block';
+        
+        const aiControls = document.getElementById('ai-controls');
+        if (aiControls) {
+            const u = divinationData.upper;
+            const l = divinationData.lower;
+            const m = divinationData.moving;
+            const searchParams = `?interpret_upper=${u}&interpret_lower=${l}&interpret_moving=${m}`;
+            
+            // 버튼을 <a> 링크로 교체하여 브라우저 보안 차단을 완벽히 우회 (target="_top" 필수)
+            aiControls.innerHTML = `<a href="${searchParams}" target="_top" class="btn-mystic" style="text-decoration:none; display:inline-block; text-align:center; width:100%; box-sizing:border-box;">AI 해설 보기</a>`;
+            aiControls.style.display = 'block';
+        }
     }
 }
 
-function requestAIInterpretation() {
-    // 본괘 및 동효 정보를 URL 파라미터로 생성
-    const u = divinationData.upper;
-    const l = divinationData.lower;
-    const m = divinationData.moving;
-    
-    // 현재 페이지의 주소를 가져와서 파라미터만 붙임
-    const searchParams = `?interpret_upper=${u}&interpret_lower=${l}&interpret_moving=${m}`;
-    
-    // target="_top" 효과를 내기 위해 window.top.location 사용
-    // 브라우저 보안에 가장 덜 걸리는 방식입니다.
-    try {
-        window.top.location.href = window.top.location.origin + window.top.location.pathname + searchParams;
-    } catch(e) {
-        // 보안 에러가 날 경우를 대비해 최후의 수단으로 window.open 사용
-        window.open(searchParams, "_top");
-    }
-}
+// 기존 함수는 이제 필요 없으므로 삭제합니다.
+
 
 function renderOriginal() {
     const visual = document.getElementById('original-visual');
