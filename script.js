@@ -76,7 +76,7 @@ const interpretationContainer = document.getElementById('interpretation-containe
 const interpretationText = document.getElementById('interpretation-text');
 
 // --- Gemini API Configuration ---
-const GEMINI_API_URL = "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-8b:generateContent";
+const GEMINI_API_URL = "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent";
 
 function getGeminiApiKey() {
     let key = localStorage.getItem('gemini_api_key');
