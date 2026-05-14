@@ -1,6 +1,7 @@
 import streamlit as st
 import streamlit.components.v1 as components
 import re
+import requests
 
 st.set_page_config(
     page_title="주역점 - 하늘과 땅의 이치를 묻다",
@@ -9,7 +10,6 @@ st.set_page_config(
     initial_sidebar_state="collapsed"
 )
 
-# Streamlit 기본 UI 숨기기
 st.markdown("""
     <style>
     .stApp { background-color: #0a0a0f; }
@@ -18,8 +18,25 @@ st.markdown("""
     </style>
 """, unsafe_allow_html=True)
 
-# Secrets에서 API 키
 api_key = st.secrets.get("GEMINI_API_KEY", "")
+
+# ── Python 백엔드로 Gemini 호출 ──────────────────────────────
+# JS의 fetch가 CORS에 막히는 경우를 위해 Python이 대신 호출
+if "gemini_prompt" in st.query_params:
+    prompt = st.query_params.get("gemini_prompt", "")
+    if prompt and api_key:
+        url = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent"
+        try:
+            resp = requests.post(
+                url + "?key=" + api_key,
+                json={"contents": [{"parts": [{"text": prompt}]}],
+                      "generationConfig": {"temperature": 0.7}},
+                timeout=30
+            )
+            st.json(resp.json())
+        except Exception as e:
+            st.error(str(e))
+    st.stop()
 
 def load_app():
     with open("index.html", "r", encoding="utf-8") as f:
@@ -36,11 +53,12 @@ def load_app():
     # CSS 인라인 주입
     html = html.replace('<link rel="stylesheet" href="style.css">', '<style>' + css + '</style>')
 
-    # body 수직 중앙정렬 제거 (iframe 안에서 화면 밀림 방지)
-    body_fix = '<style>body { justify-content: flex-start !important; padding-top: 2rem; }</style>'
+    # body 수직 중앙정렬 제거 (iframe 화면 밀림 방지)
+    body_fix = '<style>body{justify-content:flex-start!important;padding-top:2rem;}</style>'
 
-    # JS 통합: f-string 사용 금지 (\\n이 실제 줄바꿈으로 변환되는 문제 방지)
-    # + 연산자로 문자열 직접 연결
+    # ★ f-string 사용 금지 ★
+    # data.js 안의 \\n 이 f-string에서 실제 줄바꿈으로 변환되어 JS SyntaxError 발생
+    # → + 연산자로 직접 연결
     api_key_js = 'window.STREAMLIT_API_KEY = "' + api_key.replace('"', '\\"') + '";'
 
     combined_js = (
@@ -52,12 +70,9 @@ def load_app():
         + '</script>'
     )
 
-    # 기존 script 태그 제거 후 통합본 삽입
     html = re.sub(r'<script src="data\.js"></script>\s*', '', html)
     html = re.sub(r'<script src="dictionary\.js"></script>\s*', '', html)
     html = html.replace('<script src="script.js"></script>', combined_js)
-
-    # body 닫기 전에 CSS 오버라이드 삽입
     html = html.replace('</body>', body_fix + '\n</body>')
 
     return html
