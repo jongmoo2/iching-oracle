@@ -99,35 +99,33 @@ function setupGeminiKey() {
 }
 
 async function callGeminiAPI(promptText) {
-    // 1. 외부 URL(구글)이 아닌 현재 앱의 백엔드 주소로 요청
     const baseUrl = window.location.origin + window.location.pathname;
     const fetchUrl = `${baseUrl}?gemini_prompt=${encodeURIComponent(promptText)}`;
 
     try {
         const response = await fetch(fetchUrl);
-        if (!response.ok) throw new Error("백엔드 서버 응답 실패");
+        const html = await response.text();
         
-        const rawData = await response.text();
-        // 스트림릿 출력 특성상 JSON만 남기기 위해 파싱 시도
-        const data = JSON.parse(rawData);
+        // 스트림릿 st.text() 응답에서 실제 JSON 데이터만 추출
+        const match = html.match(/<pre[^>]*>([\s\S]*?)<\/pre>/);
+        const jsonStr = match ? match[1].trim() : html.trim();
+        
+        const data = JSON.parse(jsonStr);
 
-        if (data.error) {
-            throw new Error(`API 오류: ${data.error.message || JSON.stringify(data.error)}`);
-        }
-
+        if (data.error) throw new Error(data.error.message || "API 오류");
+        
         const textResponse = data.candidates[0].content.parts[0].text;
         
-        // JSON 응답일 경우 파싱하여 객체로 반환
+        // 마크다운 백틱 제거 후 객체화
+        const cleanedText = textResponse.replace(/```json/g, '').replace(/```/g, '').trim();
         try {
-            // 마크다운 백틱(```json ... ```) 제거 로직 포함
-            const cleanedText = textResponse.replace(/```json/g, '').replace(/```/g, '').trim();
             return JSON.parse(cleanedText);
         } catch(e) {
             return { explanation: textResponse };
         }
     } catch (error) {
-        console.error("연동 실패:", error);
-        throw new Error("AI 연동 중 오류가 발생했습니다. (캐시 삭제 후 다시 시도해보세요)");
+        console.error("최종 연동 에러:", error);
+        throw new Error("AI와의 통신에 실패했습니다. 다시 시도해주세요.");
     }
 }
 
