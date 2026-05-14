@@ -131,10 +131,57 @@ async function callGeminiAPI(promptText) {
 }
 
 
+function handleInjectedAIResult(result) {
+    if (result.error) {
+        alert(result.error);
+        return;
+    }
+
+    // 결과 탭으로 전환
+    switchMode('random'); 
+
+    divinationData.upper = result.upper;
+    divinationData.lower = result.lower;
+    divinationData.moving = result.moving;
+
+    // 결과 렌더링
+    originalContainer.style.display = 'block';
+    renderOriginal();
+    renderTransformed();
+    transformedContainer.style.display = 'block';
+    
+    // 근거 텍스트 표시
+    const rationaleEl = document.getElementById('rationale-text');
+    if(rationaleEl) {
+        rationaleEl.style.display = 'block';
+        rationaleEl.innerHTML = `<strong>[작괘 근거 - AI 분석]</strong><br>${result.rationale}`;
+    }
+
+    // 전통 해설 렌더링
+    showInterpretation();
+    
+    // AI 해설 표시 (직접 받아온 해설)
+    if(document.getElementById('ai-controls')) document.getElementById('ai-controls').style.display = 'none';
+    if(document.getElementById('ai-interpretation')) document.getElementById('ai-interpretation').style.display = 'block';
+    if(document.getElementById('ai-text')) document.getElementById('ai-text').innerText = result.explanation;
+
+    // 화면 하단 결과 영역으로 부드럽게 스크롤
+    setTimeout(() => {
+        originalContainer.scrollIntoView({ behavior: 'smooth' });
+    }, 500);
+}
+
 function init() {
     drawBtn.addEventListener('click', handleDraw);
     resetBtn.addEventListener('click', reset);
+
+    // 파이썬에서 주입된 AI 결과가 있는지 확인
+    if (window.AI_INJECT_DATA) {
+        handleInjectedAIResult(window.AI_INJECT_DATA);
+    }
 }
+
+init();
 
 // ── 모드 전환 ──────────────────────────────────────────
 function switchMode(mode) {
@@ -149,10 +196,19 @@ function switchMode(mode) {
     document.getElementById('random-controls').style.display = mode === 'random' ? 'flex' : 'none';
     statusMsg.style.display = mode === 'random' ? 'block' : 'none';
 
+    // 상황작괘 탭의 안내 문구 업데이트
+    if (mode === 'situation') {
+        document.getElementById('situation-area').innerHTML = `
+            <div style="text-align:center; padding: 20px; color: #ffd700; border: 1px dashed rgba(255,215,0,0.3); border-radius: 10px;">
+                <p>✨ AI 상황작괘는 보안과 안정성을 위해<br><strong>화면 상단의 [AI 상황작괘] 메뉴</strong>로 이동되었습니다.</p>
+                <p>상단 메뉴에서 질문을 입력하고 [작괘하기]를 눌러주세요.</p>
+            </div>
+        `;
+    }
+
     // 결과 영역 초기화
     reset();
     if (mode === 'manual') resetManual();
-    if (mode === 'situation') document.getElementById('situation-text').value = '';
 }
 
 // ── 수동 모드: 괘 선택 ──────────────────────────────────

@@ -11,42 +11,84 @@ st.set_page_config(
     initial_sidebar_state="collapsed"
 )
 
+# 기본 스타일 설정
 st.markdown("""
     <style>
     #MainMenu, footer, header { visibility: hidden; height: 0; }
     .block-container { padding: 0 !important; margin: 0 !important; }
     .stApp { background-color: #0a0a0f; }
+    /* 펼침 메뉴 스타일 */
+    .stExpander { 
+        background: rgba(255,255,255,0.05); 
+        border-radius: 10px; 
+        margin: 10px 20px;
+        border: 1px solid rgba(255,215,0,0.3);
+    }
     </style>
 """, unsafe_allow_html=True)
 
 api_key = st.secrets.get("GEMINI_API_KEY", "")
 
-# Python 백엔드 Gemini 호출 (JS fetch CORS 우회용)
-if "gemini_prompt" in st.query_params:
-    prompt = st.query_params["gemini_prompt"]
-    if api_key:
-        # v1 정식 버전 주소 사용
-        url = "https://generativelanguage.googleapis.com/v1/models/gemini-1.5-flash:generateContent"
-        try:
-            resp = requests.post(
-                url + "?key=" + api_key,
-                json={
-                    "contents": [{"parts": [{"text": prompt}]}],
-                    "generationConfig": {"temperature": 0.7}
-                },
-                timeout=30
-            )
-            # 응답 데이터가 JSON인지 확인 후 전송
-            result = resp.json()
-            st.text("[[START]]" + json.dumps(result) + "[[END]]")
-        except Exception as e:
-            st.text("[[START]]" + json.dumps({"error": {"message": str(e)}}) + "[[END]]")
-    else:
-        # API 키가 없는 경우 에러 전송
-        st.text("[[START]]" + json.dumps({"error": {"message": "API 키를 찾을 수 없습니다. secrets 설정을 확인하세요."}}) + "[[END]]")
-    st.stop()
+# --- AI 작괘 처리 함수 ---
+def call_gemini_ai(prompt_text):
+    if not api_key:
+        return {"error": "API 키가 설정되지 않았습니다. st.secrets를 확인하세요."}
+    
+    url = "https://generativelanguage.googleapis.com/v1/models/gemini-1.5-flash:generateContent"
+    
+    # 주역점 전문 프롬프트
+    full_prompt = f"""
+    사용자가 다음 상황에 대해 주역점을 치려고 합니다:
+    "{prompt_text}"
+    
+    당신은 주역(I Ching)과 매화역수 등에 능통한 역학자입니다. 이 상황과 내용을 분석하여 가장 적절한 상괘(1~8), 하괘(1~8), 동효(1~6)를 도출해주세요. 
+    결과는 반드시 다음 형식의 JSON으로만 반환해주세요:
+    {{
+      "upper": 숫자(1~8),
+      "lower": 숫자(1~8),
+      "moving": 숫자(1~6),
+      "rationale": "왜 이 괘와 동효를 도출했는지에 대한 작괘 근거 및 상황 분석 (한국어)",
+      "explanation": "이 점괘가 현재 상황에 대해 주는 조언 및 해설 (한국어)"
+    }}
+    """
+    
+    try:
+        resp = requests.post(
+            url + "?key=" + api_key,
+            json={
+                "contents": [{"parts": [{"text": full_prompt}]}],
+                "generationConfig": {"temperature": 0.7}
+            },
+            timeout=30
+        )
+        res_json = resp.json()
+        text_response = res_json['candidates'][0]['content']['parts'][0]['text']
+        # 마크다운 백틱 제거 및 JSON 파싱
+        cleaned_text = re.sub(r'```json|```', '', text_response).strip()
+        return json.loads(cleaned_text)
+    except Exception as e:
+        return {"error": f"AI 분석 중 오류가 발생했습니다: {str(e)}"}
 
-def load_app():
+# --- 세션 상태 초기화 ---
+if "ai_result" not in st.session_state:
+    st.session_state.ai_result = None
+
+# --- UI 레이아웃 (상단 AI 입력 섹션) ---
+with st.expander("✨ AI 상황작괘 (상황을 입력하여 점치기)", expanded=False):
+    col1, col2 = st.columns([4, 1])
+    with col1:
+        situation_input = st.text_input("고민이나 궁금한 상황을 입력하세요", placeholder="예: 이번 프로젝트의 성패는 어떻게 될까요?")
+    with col2:
+        if st.button("작괘하기", use_container_width=True):
+            if situation_input:
+                with st.spinner("하늘의 이치를 묻는 중..."):
+                    result = call_gemini_ai(situation_input)
+                    st.session_state.ai_result = result
+            else:
+                st.warning("내용을 입력해주세요.")
+
+# --- 메인 앱 로드 함수 ---
+def load_app(ai_data=None):
     with open("index.html", "r", encoding="utf-8") as f:
         html = f.read()
     with open("style.css", "r", encoding="utf-8") as f:
@@ -58,9 +100,7 @@ def load_app():
     with open("script.js", "r", encoding="utf-8") as f:
         script_js = f.read()
 
-    # CSS 인라인 주입 + body 밀림 수정
-    # ★ f-string 절대 사용 금지 ★
-    # data.js 안의 \\n 이 f-string에서 실제 줄바꿈으로 변환 → JS SyntaxError
+    # CSS 인라인 주입 + 중앙 정렬 수정
     body_override = (
         'html { height:100%; margin:0; }'
         'body {'
@@ -86,14 +126,14 @@ def load_app():
         '<style>' + css + '\n' + body_override + '</style>'
     )
 
-    # API 키 전역 변수 제거 (보안을 위해 서버에서만 사용)
-    api_key_js = 'window.STREAMLIT_API_KEY = "";'
+    # AI 결과 데이터 주입
+    ai_inject_js = f"window.AI_INJECT_DATA = {json.dumps(ai_data)};"
 
-    # JS 통합 (+ 연산자로 연결)
+    # JS 통합
     combined_js = (
         '<script>\n'
-        + 'window.STREAMLIT_APP_URL = window.parent.location.href.split("?")[0];\n'
-        + api_key_js + '\n'
+        + ai_inject_js + '\n'
+        + 'window.STREAMLIT_API_KEY = "";\n' # 보안상 비움
         + data_js + '\n'
         + dict_js + '\n'
         + script_js + '\n'
@@ -106,5 +146,6 @@ def load_app():
 
     return html
 
-app_html = load_app()
+# 앱 렌더링
+app_html = load_app(st.session_state.ai_result)
 components.html(app_html, height=1800, scrolling=True)
