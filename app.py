@@ -77,6 +77,9 @@ def call_gemini_ai(prompt_text):
         # 마크다운 백틱 제거 및 JSON 파싱
         cleaned_text = re.sub(r'```json|```', '', text_response).strip()
         return json.loads(cleaned_text)
+    except Exception as e:
+        return {"error": f"AI 분석 중 오류가 발생했습니다: {str(e)}"}
+
 # --- 디버깅: 사용 가능한 모델 목록 확인 ---
 def get_available_models():
     if not api_key or api_key == "내_실제_API_키_입력": return "키 미설정"
@@ -88,7 +91,7 @@ def get_available_models():
             return [m['name'].replace('models/', '') for m in data['models']]
         return str(data)
     except Exception as e:
-        return str(e)
+        return f"모델 목록 로드 에러: {str(e)}"
 
 # --- 세션 상태 초기화 ---
 if "ai_result" not in st.session_state:
@@ -96,7 +99,7 @@ if "ai_result" not in st.session_state:
 
 # --- UI 레이아웃 (상단 AI 입력 섹션) ---
 with st.expander("✨ AI 상황작괘 (상황을 입력하여 점치기)", expanded=False):
-    # 디버깅 정보 표시 (필요 없으면 나중에 삭제)
+    # 디버깅 정보 표시
     models_list = get_available_models()
     st.caption(f"🛠️ 현재 접근 가능 모델: {models_list}")
     
@@ -158,7 +161,7 @@ def load_app(ai_data=None):
     combined_js = (
         '<script>\n'
         + ai_inject_js + '\n'
-        + 'window.STREAMLIT_API_KEY = "";\n' # 보안상 비움
+        + 'window.STREAMLIT_API_KEY = "";\n' 
         + data_js + '\n'
         + dict_js + '\n'
         + script_js + '\n'
