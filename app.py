@@ -77,8 +77,18 @@ def call_gemini_ai(prompt_text):
         # 마크다운 백틱 제거 및 JSON 파싱
         cleaned_text = re.sub(r'```json|```', '', text_response).strip()
         return json.loads(cleaned_text)
+# --- 디버깅: 사용 가능한 모델 목록 확인 ---
+def get_available_models():
+    if not api_key or api_key == "내_실제_API_키_입력": return "키 미설정"
+    try:
+        url = f"https://generativelanguage.googleapis.com/v1beta/models?key={api_key}"
+        resp = requests.get(url, timeout=10)
+        data = resp.json()
+        if 'models' in data:
+            return [m['name'].replace('models/', '') for m in data['models']]
+        return str(data)
     except Exception as e:
-        return {"error": f"AI 분석 중 오류가 발생했습니다: {str(e)}"}
+        return str(e)
 
 # --- 세션 상태 초기화 ---
 if "ai_result" not in st.session_state:
@@ -86,6 +96,10 @@ if "ai_result" not in st.session_state:
 
 # --- UI 레이아웃 (상단 AI 입력 섹션) ---
 with st.expander("✨ AI 상황작괘 (상황을 입력하여 점치기)", expanded=False):
+    # 디버깅 정보 표시 (필요 없으면 나중에 삭제)
+    models_list = get_available_models()
+    st.caption(f"🛠️ 현재 접근 가능 모델: {models_list}")
+    
     col1, col2 = st.columns([4, 1])
     with col1:
         situation_input = st.text_input("고민이나 궁금한 상황을 입력하세요", placeholder="예: 이번 프로젝트의 성패는 어떻게 될까요?")
