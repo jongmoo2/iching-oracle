@@ -76,7 +76,7 @@ const interpretationContainer = document.getElementById('interpretation-containe
 const interpretationText = document.getElementById('interpretation-text');
 
 // --- Gemini API Configuration ---
-const GEMINI_API_URL = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent";
+const GEMINI_API_URL = "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-8b:generateContent";
 
 function getGeminiApiKey() {
     let key = localStorage.getItem('gemini_api_key');
@@ -104,45 +104,34 @@ async function callGeminiAPI(promptText) {
         throw new Error("API 키가 없습니다.");
     }
 
-    let response;
-    try {
-        response = await fetch(`${GEMINI_API_URL}?key=${apiKey}`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-                contents: [{ parts: [{ text: promptText }] }],
-                generationConfig: { temperature: 0.7 }
-            })
-        });
-    } catch (networkErr) {
-        // CORS 또는 네트워크 오류
-        console.error("Network/CORS error:", networkErr);
-        throw new Error("네트워크 오류: " + networkErr.message + "\n\nStreamlit 환경에서는 app.py의 Python 백엔드를 통해 API를 호출해야 할 수 있습니다.");
-    }
+    const response = await fetch(`${GEMINI_API_URL}?key=${apiKey}`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+            contents: [{
+                parts: [{ text: promptText }]
+            }],
+            generationConfig: {
+                temperature: 0.7,
+            }
+        })
+    });
 
     if (!response.ok) {
-        let errBody = "";
-        try { errBody = await response.text(); } catch(e) {}
-        console.error("Gemini API Error:", response.status, errBody);
-        // 상태 코드별 안내
-        if (response.status === 400) throw new Error("API 오류 400: 요청 형식 오류\n" + errBody.substring(0, 200));
-        if (response.status === 403) throw new Error("API 오류 403: API 키가 유효하지 않거나 권한이 없습니다.");
-        if (response.status === 429) throw new Error("API 오류 429: 요청 한도 초과. 잠시 후 다시 시도하세요.");
-        throw new Error("API 오류 " + response.status + ": " + errBody.substring(0, 200));
+        const err = await response.text();
+        console.error("Gemini API Error:", err);
+        throw new Error("API 호출에 실패했습니다. 키가 올바른지 확인해주세요.");
     }
 
     const data = await response.json();
     try {
         const textResponse = data.candidates[0].content.parts[0].text;
-        // JSON 파싱 시도, 실패하면 텍스트 그대로 반환
-        try {
-            return JSON.parse(textResponse);
-        } catch(e) {
-            return { explanation: textResponse };
-        }
+        return JSON.parse(textResponse);
     } catch (e) {
-        console.error("Response parse error:", e, data);
-        throw new Error("응답 파싱 오류: " + JSON.stringify(data).substring(0, 200));
+        console.error("Failed to parse JSON:", e, data);
+        throw new Error("결과를 해석하는데 실패했습니다.");
     }
 }
 
