@@ -501,13 +501,17 @@ async function requestAIInterpretation() {
     const upper = divinationData.upper;
     const lower = divinationData.lower;
     const moving = divinationData.moving;
-
-    // 현재 URL의 기본 경로만 추출 (부모 창 기준)
-    const baseUrl = window.parent.location.origin + window.parent.location.pathname;
+    
+    // 파이썬에서 주입해준 앱 주소를 우선적으로 사용 (보안 우회용)
+    let baseUrl = window.STREAMLIT_APP_URL;
+    if (!baseUrl || baseUrl.includes('undefined')) {
+        baseUrl = window.parent.location.origin + window.parent.location.pathname;
+    }
+    
     const targetUrl = `${baseUrl}?interpret_upper=${upper}&interpret_lower=${lower}&interpret_moving=${moving}`;
-
-    // 부모 창 이동 (새로고침 효과)
-    window.parent.location.href = targetUrl;
+    
+    // 부모 창 이동 (보안 차단을 피하기 위해 _top 타겟 사용)
+    window.open(targetUrl, "_top");
 }
 
 function renderOriginal() {

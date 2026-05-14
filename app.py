@@ -164,8 +164,11 @@ def load_app(ai_data=None):
         '<style>' + css + '\n' + body_override + '</style>'
     )
 
-    # AI 결과 데이터 주입
-    ai_inject_js = f"window.AI_INJECT_DATA = {json.dumps(ai_data)};"
+    # AI 결과 데이터 주입 및 앱 URL 전달
+    ai_inject_js = (
+        f"window.AI_INJECT_DATA = {json.dumps(ai_data)};\n"
+        f"window.STREAMLIT_APP_URL = window.location.origin + window.location.pathname;"
+    )
 
     # JS 통합
     combined_js = (
