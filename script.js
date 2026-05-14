@@ -97,10 +97,10 @@ async function callGeminiAPI(promptText) {
     try {
         const response = await fetch(fetchUrl);
         const fullText = await response.text();
-        
+
         // 정규식을 사용하여 마커 사이의 내용만 추출
         const match = fullText.match(/\[\[START\]\]([\s\S]*?)\[\[END\]\]/);
-        
+
         if (!match) {
             console.error("Raw Response Snippet:", fullText.substring(0, 500));
             // 만약 스트림릿 에러 페이지가 돌아왔다면 그 내용을 요약해서 보여줌
@@ -114,14 +114,14 @@ async function callGeminiAPI(promptText) {
         const data = JSON.parse(jsonStr);
 
         if (data.error) throw new Error(data.error.message || "API 오류 발생");
-        
+
         const textResponse = data.candidates[0].content.parts[0].text;
-        
+
         try {
             // 마크다운 백틱 제거
             const cleanedText = textResponse.replace(/```json/g, '').replace(/```/g, '').trim();
             return JSON.parse(cleanedText);
-        } catch(e) {
+        } catch (e) {
             return { explanation: textResponse };
         }
     } catch (error) {
@@ -138,7 +138,7 @@ function handleInjectedAIResult(result) {
     }
 
     // 결과 탭으로 전환
-    switchMode('random'); 
+    switchMode('random');
 
     divinationData.upper = result.upper;
     divinationData.lower = result.lower;
@@ -149,21 +149,21 @@ function handleInjectedAIResult(result) {
     renderOriginal();
     renderTransformed();
     transformedContainer.style.display = 'block';
-    
+
     // 근거 텍스트 표시
     const rationaleEl = document.getElementById('rationale-text');
-    if(rationaleEl) {
+    if (rationaleEl) {
         rationaleEl.style.display = 'block';
         rationaleEl.innerHTML = `<strong>[작괘 근거 - AI 분석]</strong><br>${result.rationale}`;
     }
 
     // 전통 해설 렌더링
     showInterpretation();
-    
+
     // AI 해설 표시 (직접 받아온 해설)
-    if(document.getElementById('ai-controls')) document.getElementById('ai-controls').style.display = 'none';
-    if(document.getElementById('ai-interpretation')) document.getElementById('ai-interpretation').style.display = 'block';
-    if(document.getElementById('ai-text')) document.getElementById('ai-text').innerText = result.explanation;
+    if (document.getElementById('ai-controls')) document.getElementById('ai-controls').style.display = 'none';
+    if (document.getElementById('ai-interpretation')) document.getElementById('ai-interpretation').style.display = 'block';
+    if (document.getElementById('ai-text')) document.getElementById('ai-text').innerText = result.explanation;
 
     // 화면 하단 결과 영역으로 부드럽게 스크롤
     setTimeout(() => {
@@ -320,10 +320,10 @@ async function submitSituation() {
         loadingEl.style.display = 'block';
         loadingEl.scrollIntoView({ behavior: 'smooth' });
     }
-    
-    if(document.getElementById('ai-interpretation')) document.getElementById('ai-interpretation').style.display = 'none';
-    if(document.getElementById('ai-controls')) document.getElementById('ai-controls').style.display = 'none';
-    
+
+    if (document.getElementById('ai-interpretation')) document.getElementById('ai-interpretation').style.display = 'none';
+    if (document.getElementById('ai-controls')) document.getElementById('ai-controls').style.display = 'none';
+
     originalContainer.style.display = 'none';
     transformedContainer.style.display = 'none';
     interpretationContainer.style.display = 'none';
@@ -332,7 +332,7 @@ async function submitSituation() {
 
     try {
         const result = await callGeminiAPI(prompt);
-        
+
         divinationData.upper = result.upper;
         divinationData.lower = result.lower;
         divinationData.moving = result.moving;
@@ -342,22 +342,22 @@ async function submitSituation() {
         renderOriginal();
         renderTransformed();
         transformedContainer.style.display = 'block';
-        
+
         // 근거 텍스트 표시
         const rationaleEl = document.getElementById('rationale-text');
-        if(rationaleEl) {
+        if (rationaleEl) {
             rationaleEl.style.display = 'block';
             rationaleEl.innerHTML = `<strong>[작괘 근거 - AI 분석]</strong><br>${result.rationale}`;
         }
 
         // 전통 해설 렌더링
         showInterpretation();
-        
+
         // AI 해설 표시 (직접 받아온 해설)
-        if(document.getElementById('ai-controls')) document.getElementById('ai-controls').style.display = 'none';
-        if(document.getElementById('ai-interpretation')) document.getElementById('ai-interpretation').style.display = 'block';
-        if(document.getElementById('ai-text')) document.getElementById('ai-text').innerText = result.explanation;
-        
+        if (document.getElementById('ai-controls')) document.getElementById('ai-controls').style.display = 'none';
+        if (document.getElementById('ai-interpretation')) document.getElementById('ai-interpretation').style.display = 'block';
+        if (document.getElementById('ai-text')) document.getElementById('ai-text').innerText = result.explanation;
+
     } catch (error) {
         alert(error.message);
     } finally {
@@ -488,11 +488,11 @@ function showInterpretation() {
     }
 
     interpretationContainer.style.display = 'block';
-    
+
     // AI 관련 초기화 (상황작괘가 아닐 경우 버튼 표시)
     if (currentMode !== 'situation') {
-        if(document.getElementById('ai-interpretation')) document.getElementById('ai-interpretation').style.display = 'none';
-        if(document.getElementById('ai-controls')) document.getElementById('ai-controls').style.display = 'block';
+        if (document.getElementById('ai-interpretation')) document.getElementById('ai-interpretation').style.display = 'none';
+        if (document.getElementById('ai-controls')) document.getElementById('ai-controls').style.display = 'block';
     }
 }
 
@@ -501,11 +501,11 @@ async function requestAIInterpretation() {
     const upper = divinationData.upper;
     const lower = divinationData.lower;
     const moving = divinationData.moving;
-    
+
     // 현재 URL의 기본 경로만 추출 (부모 창 기준)
     const baseUrl = window.parent.location.origin + window.parent.location.pathname;
     const targetUrl = `${baseUrl}?interpret_upper=${upper}&interpret_lower=${lower}&interpret_moving=${moving}`;
-    
+
     // 부모 창 이동 (새로고침 효과)
     window.parent.location.href = targetUrl;
 }
@@ -628,16 +628,16 @@ function reset() {
     document.getElementById('transformed-visual').innerHTML = '';
     document.getElementById('original-name').innerText = '';
     document.getElementById('original-hanja').innerText = '';
-    
+
     const rationaleEl = document.getElementById('rationale-text');
     if (rationaleEl) {
         rationaleEl.style.display = 'none';
         rationaleEl.innerHTML = '';
     }
-    
-    if(document.getElementById('ai-interpretation')) document.getElementById('ai-interpretation').style.display = 'none';
-    if(document.getElementById('ai-controls')) document.getElementById('ai-controls').style.display = 'none';
-    if(document.getElementById('ai-loading')) document.getElementById('ai-loading').style.display = 'none';
+
+    if (document.getElementById('ai-interpretation')) document.getElementById('ai-interpretation').style.display = 'none';
+    if (document.getElementById('ai-controls')) document.getElementById('ai-controls').style.display = 'none';
+    if (document.getElementById('ai-loading')) document.getElementById('ai-loading').style.display = 'none';
 }
 
 init();
