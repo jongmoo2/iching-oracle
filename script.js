@@ -24,11 +24,11 @@ const TRIGRAM_NAMES = {
 const HEXAGRAM_TABLE = {
     1: { // 상괘 건(天)
         1: { id: 1, name: "중천건", hanja: "重天乾" }, 2: { id: 10, name: "천택리", hanja: "天澤履" }, 3: { id: 13, name: "천화동인", hanja: "天火同人" }, 4: { id: 25, name: "천뢰무망", hanja: "天雷无妄" },
-        5: { id: 44, name: "천풍구", hanja: "天風姤" }, 6: { id: 6, name: "천수송", hanja: "天水訟" }, 7: { id: 33, name: "천산돈", hanja: "天山遯" }, 8: { id: 12, name: "천지비", hanja: "天地否" }
+        5: { id: 44, name: "천풍구", hanja: "天風姤" }, 6: { id: 6, name: "천수송", hanja: "天水訟" }, 7: { id: 33, name: "천산둔", hanja: "天山遯" }, 8: { id: 12, name: "천지비", hanja: "天地否" }
     },
     2: { // 상괘 태(澤)
         1: { id: 43, name: "택천쾌", hanja: "澤天夬" }, 2: { id: 58, name: "중택태", hanja: "重澤兌" }, 3: { id: 49, name: "택화혁", hanja: "澤火革" }, 4: { id: 17, name: "택뢰수", hanja: "澤雷隨" },
-        5: { id: 28, name: "택풍대과", hanja: "澤風大過" }, 6: { id: 47, name: "택수곤", hanja: "澤水困" }, 7: { id: 31, name: "택산함", hanja: "澤山咸" }, 8: { id: 45, name: "택지취", hanja: "澤地萃" }
+        5: { id: 28, name: "택풍대과", hanja: "澤風大過" }, 6: { id: 47, name: "택수곤", hanja: "澤水困" }, 7: { id: 31, name: "택산함", hanja: "澤山咸" }, 8: { id: 45, name: "택지췌", hanja: "澤地萃" }
     },
     3: { // 상괘 리(火)
         1: { id: 14, name: "화천대유", hanja: "火天大有" }, 2: { id: 38, name: "화택규", hanja: "火澤睽" }, 3: { id: 30, name: "중화리", hanja: "重火離" }, 4: { id: 21, name: "화뢰서합", hanja: "火雷噬嗑" },
@@ -44,7 +44,7 @@ const HEXAGRAM_TABLE = {
     },
     6: { // 상괘 감(水)
         1: { id: 5, name: "수천수", hanja: "水天需" }, 2: { id: 60, name: "수택절", hanja: "水澤節" }, 3: { id: 63, name: "수화기제", hanja: "水火旣濟" }, 4: { id: 3, name: "수뢰둔", hanja: "水雷屯" },
-        5: { id: 48, name: "수풍정", hanja: "水風井" }, 6: { id: 29, name: "중수감", hanja: "重水坎" }, 7: { id: 39, name: "수산건", hanja: "水山蹇" }, 8: { id: 8, name: "수지비", hanja: "水지比" }
+        5: { id: 48, name: "수풍정", hanja: "水風井" }, 6: { id: 29, name: "중수감", hanja: "重水坎" }, 7: { id: 39, name: "수산건", hanja: "水山蹇" }, 8: { id: 8, name: "수지비", hanja: "水地比" }
     },
     7: { // 상괘 간(山)
         1: { id: 26, name: "산천대축", hanja: "山天大畜" }, 2: { id: 41, name: "산택손", hanja: "山澤損" }, 3: { id: 22, name: "산화비", hanja: "山火賁" }, 4: { id: 27, name: "산뢰이", hanja: "山雷頤" },
@@ -442,20 +442,20 @@ function showInterpretation() {
     // AI 관련 초기화 (상황작괘가 아닐 경우 버튼 표시)
     if (currentMode !== 'situation') {
         if (document.getElementById('ai-interpretation')) document.getElementById('ai-interpretation').style.display = 'none';
-        
+
         const aiControls = document.getElementById('ai-controls');
         if (aiControls) {
             const u = divinationData.upper;
             const l = divinationData.lower;
             const m = divinationData.moving;
             const searchParams = `?interpret_upper=${u}&interpret_lower=${l}&interpret_moving=${m}`;
-            
+
             // 부모 창(스트림릿 앱)의 주소를 확실하게 찾기
             let baseUrl = document.referrer.split('?')[0];
             if (!baseUrl || baseUrl === "") baseUrl = "./";
-            
+
             const targetUrl = baseUrl + searchParams;
-            
+
             // 버튼을 <a> 링크로 교체 (target="_top"으로 부모 창 제어)
             aiControls.innerHTML = `<a href="${targetUrl}" target="_top" class="btn-mystic" style="text-decoration:none; display:inline-block; text-align:center; width:100%; box-sizing:border-box;">AI 해설 보기</a>`;
             aiControls.style.display = 'block';
@@ -515,14 +515,14 @@ function showInterpretation() {
     // AI 관련 초기화 (상황작괘가 아닐 경우 버튼 표시)
     if (currentMode !== 'situation') {
         if (document.getElementById('ai-interpretation')) document.getElementById('ai-interpretation').style.display = 'none';
-        
+
         const aiControls = document.getElementById('ai-controls');
         if (aiControls) {
             const u = divinationData.upper;
             const l = divinationData.lower;
             const m = divinationData.moving;
             const searchParams = `?interpret_upper=${u}&interpret_lower=${l}&interpret_moving=${m}`;
-            
+
             // 버튼을 <a> 링크로 교체하여 브라우저 보안 차단을 완벽히 우회 (target="_top" 필수)
             aiControls.innerHTML = `<a href="${searchParams}" target="_top" class="btn-mystic" style="text-decoration:none; display:inline-block; text-align:center; width:100%; box-sizing:border-box;">AI 해설 보기</a>`;
             aiControls.style.display = 'block';
