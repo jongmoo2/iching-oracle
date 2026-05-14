@@ -25,7 +25,7 @@ api_key = st.secrets.get("GEMINI_API_KEY", "")
 if "gemini_prompt" in st.query_params:
     prompt = st.query_params.get("gemini_prompt", "")
     if prompt and api_key:
-        url = "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent"
+        url = "https://generativelanguage.googleapis.com/v1/models/gemini-1.5-flash:generateContent"
         try:
             resp = requests.post(
                 url + "?key=" + api_key,
