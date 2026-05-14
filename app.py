@@ -4,13 +4,29 @@ import re
 import requests
 import json
 
-st.set_page_config(page_title="주역점", page_icon="☯️", layout="wide")
+# 1. 페이지 설정 (최상단 고정)
+st.set_page_config(
+    page_title="주역점 - 하늘과 땅의 이치를 묻다",
+    page_icon="☯️",
+    layout="wide",
+    initial_sidebar_state="collapsed"
+)
 
-# 스트림릿 Secrets에서 키 가져오기
+# 2. 상단 공백 및 기본 패딩 강제 제거
+st.markdown("""
+    <style>
+    /* 스트림릿 기본 요소 숨기기 */
+    #MainMenu, footer, header { visibility: hidden; height: 0; }
+    /* 상단 공백 제거 */
+    .block-container { padding: 0 !important; margin: 0 !important; }
+    .stApp { background-color: #0a0a0f; }
+    iframe { display: block; }
+    </style>
+""", unsafe_allow_html=True)
+
 api_key = st.secrets.get("GEMINI_API_KEY", "")
 
-# ── [핵심] Python 백엔드: JS의 요청을 처리 ──────────────────────
-# query_params 대신 앱 최상단에서 즉시 응답을 쏘고 종료하게 구성
+# 3. Python 백엔드 (JS 응답용)
 params = st.query_params
 if "gemini_prompt" in params:
     prompt = params["gemini_prompt"]
@@ -23,13 +39,13 @@ if "gemini_prompt" in params:
                       "generationConfig": {"temperature": 0.7}},
                 timeout=30
             )
-            # 스트림릿 서식을 모두 무시하고 '순수 JSON'만 텍스트로 출력
-            st.write(f"[[START]]{json.dumps(resp.json())}[[END]]")
+            # 마커를 사용하여 순수 데이터만 출력
+            st.text(f"[[START]]{json.dumps(resp.json())}[[END]]")
         except Exception as e:
-            st.write(f"[[START]]{json.dumps({'error': str(e)})}[[END]]")
+            st.text(f"[[START]]{json.dumps({'error': str(e)})}[[END]]")
     st.stop()
 
-# ── 앱 화면 로드 ──────────────────────────────────────────
+# 4. 앱 로드 로직
 def load_app():
     with open("index.html", "r", encoding="utf-8") as f: html = f.read()
     with open("style.css", "r", encoding="utf-8") as f: css = f.read()
@@ -37,13 +53,17 @@ def load_app():
     with open("dictionary.js", "r", encoding="utf-8") as f: dict_js = f.read()
     with open("script.js", "r", encoding="utf-8") as f: script_js = f.read()
 
-    html = html.replace('<link rel="stylesheet" href="style.css">', f'<style>{css}</style>')
-    combined_js = f"<script>\n{data_js}\n{dict_js}\n{script_js}\n</script>"
+    # CSS 주입 및 여백 강제 수정
+    html = html.replace('<link rel="stylesheet" href="style.css">', f'<style>{css}\nbody{{margin:0;padding:0;justify-content:flex-start!important;}}</style>')
     
+    # 스크립트 통합
+    combined_js = f"<script>\n{data_js}\n{dict_js}\n{script_js}\n</script>"
     html = re.sub(r'<script src="data\.js"></script>', '', html)
     html = re.sub(r'<script src="dictionary\.js"></script>', '', html)
     html = html.replace('<script src="script.js"></script>', combined_js)
+    
     return html
 
 app_html = load_app()
-components.html(app_html, height=1800, scrolling=True)
+# 높이를 넉넉히 주되 상단 정렬
+components.html(app_html, height=1600, scrolling=True)

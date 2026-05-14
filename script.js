@@ -106,34 +106,31 @@ async function callGeminiAPI(promptText) {
         const response = await fetch(fetchUrl);
         const fullText = await response.text();
         
-        // [[START]]와 [[END]] 사이의 JSON 데이터만 정규식으로 추출합니다.
-        const startMarker = "[[START]]";
-        const endMarker = "[[END]]";
-        const startIndex = fullText.indexOf(startMarker);
-        const endIndex = fullText.indexOf(endMarker);
-
-        if (startIndex === -1 || endIndex === -1) {
-            console.error("전체 응답 내용:", fullText);
-            throw new Error("서버 응답 형식이 올바르지 않습니다.");
+        // 정규식을 사용하여 마커 사이의 내용만 추출 (st.text가 만든 <pre> 태그 대응)
+        const match = fullText.match(/\[\[START\]\]([\s\S]*?)\[\[END\]\]/);
+        
+        if (!match) {
+            console.error("Raw Response:", fullText);
+            throw new Error("서버 응답 마커를 찾을 수 없습니다.");
         }
 
-        const jsonStr = fullText.substring(startIndex + startMarker.length, endIndex).trim();
+        const jsonStr = match[1].trim();
         const data = JSON.parse(jsonStr);
 
-        if (data.error) throw new Error(data.error.message || "API 호출 오류");
+        if (data.error) throw new Error(data.error.message || "API 오류 발생");
         
         const textResponse = data.candidates[0].content.parts[0].text;
         
-        // AI가 준 텍스트가 JSON 형식이면 파싱, 아니면 객체로 생성
         try {
+            // 마크다운 백틱 제거
             const cleanedText = textResponse.replace(/```json/g, '').replace(/```/g, '').trim();
             return JSON.parse(cleanedText);
         } catch(e) {
             return { explanation: textResponse };
         }
     } catch (error) {
-        console.error("상세 에러 내용:", error);
-        throw new Error("AI 분석을 불러오지 못했습니다. 잠시 후 다시 시도해주세요.");
+        console.error("Detailed Error:", error);
+        throw new Error("AI 분석 연결 실패: " + error.message);
     }
 }
 
