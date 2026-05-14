@@ -99,48 +99,35 @@ function setupGeminiKey() {
 }
 
 async function callGeminiAPI(promptText) {
-    const apiKey = getGeminiApiKey();
-    if (!apiKey) {
-        throw new Error("API 키가 없습니다.");
-    }
+    // 1. 외부 URL(구글)이 아닌 현재 앱의 백엔드 주소로 요청
+    const baseUrl = window.location.origin + window.location.pathname;
+    const fetchUrl = `${baseUrl}?gemini_prompt=${encodeURIComponent(promptText)}`;
 
-    let response;
     try {
-        response = await fetch(`${GEMINI_API_URL}?key=${apiKey}`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-                contents: [{ parts: [{ text: promptText }] }],
-                generationConfig: { temperature: 0.7 }
-            })
-        });
-    } catch (networkErr) {
-        console.error("Network error:", networkErr);
-        throw new Error("네트워크 오류: " + networkErr.message);
-    }
+        const response = await fetch(fetchUrl);
+        if (!response.ok) throw new Error("백엔드 서버 응답 실패");
+        
+        const rawData = await response.text();
+        // 스트림릿 출력 특성상 JSON만 남기기 위해 파싱 시도
+        const data = JSON.parse(rawData);
 
-    if (!response.ok) {
-        let errBody = "";
-        try { errBody = await response.text(); } catch(e) {}
-        console.error("Gemini API Error:", response.status, errBody);
-        if (response.status === 400) throw new Error("API 오류 400 (요청 형식): " + errBody.substring(0, 300));
-        if (response.status === 403) throw new Error("API 오류 403: API 키 권한 없음");
-        if (response.status === 429) throw new Error("API 오류 429: 요청 한도 초과. 잠시 후 다시 시도하세요.");
-        throw new Error("API 오류 " + response.status + ": " + errBody.substring(0, 300));
-    }
+        if (data.error) {
+            throw new Error(`API 오류: ${data.error.message || JSON.stringify(data.error)}`);
+        }
 
-    const data = await response.json();
-    try {
         const textResponse = data.candidates[0].content.parts[0].text;
-        // JSON 파싱 시도, 실패하면 텍스트 그대로 반환
+        
+        // JSON 응답일 경우 파싱하여 객체로 반환
         try {
-            return JSON.parse(textResponse);
+            // 마크다운 백틱(```json ... ```) 제거 로직 포함
+            const cleanedText = textResponse.replace(/```json/g, '').replace(/```/g, '').trim();
+            return JSON.parse(cleanedText);
         } catch(e) {
             return { explanation: textResponse };
         }
-    } catch (e) {
-        console.error("Response parse error:", e, data);
-        throw new Error("응답 파싱 오류: " + JSON.stringify(data).substring(0, 200));
+    } catch (error) {
+        console.error("연동 실패:", error);
+        throw new Error("AI 연동 중 오류가 발생했습니다. (캐시 삭제 후 다시 시도해보세요)");
     }
 }
 
