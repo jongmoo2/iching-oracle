@@ -85,10 +85,10 @@ if "ai_result" not in st.session_state:
     st.session_state.ai_result = None
 
 # --- UI 레이아웃 (상단 AI 입력 섹션) ---
-with st.expander("✨ AI 상황작괘 (상황을 입력하여 점치기)", expanded=False):
+with st.expander("✨ AI 상황작괘 (묻고 싶은 것이나 특정한 상황을 입력하여 점치기)", expanded=False):
     col1, col2 = st.columns([4, 1])
     with col1:
-        situation_input = st.text_input("고민이나 궁금한 상황을 입력하세요", placeholder="예: 이번 프로젝트의 성패는 어떻게 될까요?")
+        situation_input = st.text_input(placeholder="예: 이번 프로젝트의 성패는 어떻게 될까요?")
     with col2:
         if st.button("작괘하기", use_container_width=True):
             if situation_input:
