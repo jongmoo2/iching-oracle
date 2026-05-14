@@ -86,10 +86,16 @@ if "ai_result" not in st.session_state:
 
 # --- UI 레이아웃 (상단 AI 입력 섹션) ---
 with st.expander("✨ AI 상황작괘 (상황을 입력하여 점치기)", expanded=False):
+    # 문구가 잘 보이도록 스타일 적용된 라벨
+    st.markdown('<p style="color:#ffd700; font-weight:bold; margin-bottom:-10px;">묻고 싶은 것이나 특정한 상황을 입력하세요</p>', unsafe_allow_html=True)
+    
+    # 컬럼 배치 (버튼과 입력창 높이 맞춤)
     col1, col2 = st.columns([4, 1])
     with col1:
-        situation_input = st.text_input("묻고 싶은 것이나 특정한 상황을 입력하세요", placeholder="예: 이번 프로젝트의 성패는 어떻게 될까요?")
+        # label_visibility="collapsed"를 사용하여 버튼과 수평 정렬
+        situation_input = st.text_input("상황 입력", placeholder="예: 이번 프로젝트의 성패는 어떻게 될까요?", label_visibility="collapsed")
     with col2:
+        # 버튼이 입력창과 높이가 맞도록 스타일 조정
         if st.button("작괘하기", use_container_width=True):
             if situation_input:
                 with st.spinner("하늘의 이치를 묻는 중..."):
