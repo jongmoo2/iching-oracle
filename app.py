@@ -31,8 +31,8 @@ api_key = st.secrets.get("GEMINI_API_KEY", "")
 
 # --- AI 작괘 처리 함수 ---
 def call_gemini_ai(prompt_text):
-    if not api_key:
-        return {"error": "API 키가 설정되지 않았습니다. st.secrets를 확인하세요."}
+    if not api_key or api_key == "내_실제_API_키_입력":
+        return {"error": "API 키가 설정되지 않았습니다. .streamlit/secrets.toml 파일에 실제 키를 입력했는지 확인해 주세요."}
     
     url = "https://generativelanguage.googleapis.com/v1/models/gemini-1.5-flash:generateContent"
     
@@ -62,6 +62,16 @@ def call_gemini_ai(prompt_text):
             timeout=30
         )
         res_json = resp.json()
+        
+        # 1. API 자체 에러 확인 (API 키 오류 등)
+        if 'error' in res_json:
+            error_msg = res_json['error'].get('message', '알 수 없는 API 에러')
+            return {"error": f"Google API 오류: {error_msg}"}
+            
+        # 2. 답변 존재 여부 확인
+        if 'candidates' not in res_json or not res_json['candidates']:
+            return {"error": "AI가 응답을 생성하지 못했습니다. (안전 정책에 의해 차단되었거나 답변이 없음)"}
+
         text_response = res_json['candidates'][0]['content']['parts'][0]['text']
         # 마크다운 백틱 제거 및 JSON 파싱
         cleaned_text = re.sub(r'```json|```', '', text_response).strip()
