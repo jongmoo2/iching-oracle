@@ -28,14 +28,17 @@ if "gemini_prompt" in st.query_params:
         url = "https://generativelanguage.googleapis.com/v1/models/gemini-1.5-flash:generateContent"
         try:
             resp = requests.post(
-                url + "?key=" + api_key,
-                json={"contents": [{"parts": [{"text": prompt}]}],
-                      "generationConfig": {"temperature": 0.7}},
+                f"{url}?key={api_key}",
+                json={
+                    "contents": [{"parts": [{"text": prompt}]}],
+                    "generationConfig": {"temperature": 0.7}
+                },
                 timeout=30
             )
-            st.json(resp.json())
+            # st.json() 대신 아래처럼 '순수 텍스트'만 응답으로 보냅니다.
+            st.code(json.dumps(resp.json()), language="json") 
         except Exception as e:
-            st.error(str(e))
+            st.code(json.dumps({"error": str(e)}), language="json")
     st.stop()
 
 def load_app():
