@@ -496,22 +496,23 @@ function showInterpretation() {
     }
 }
 
-async function requestAIInterpretation() {
-    // 본괘 및 동효 정보를 URL 파라미터로 담아 부모 창(스트림릿) 새로고침
-    const upper = divinationData.upper;
-    const lower = divinationData.lower;
-    const moving = divinationData.moving;
+function requestAIInterpretation() {
+    // 본괘 및 동효 정보를 URL 파라미터로 생성
+    const u = divinationData.upper;
+    const l = divinationData.lower;
+    const m = divinationData.moving;
     
-    // 파이썬에서 주입해준 앱 주소를 우선적으로 사용 (보안 우회용)
-    let baseUrl = window.STREAMLIT_APP_URL;
-    if (!baseUrl || baseUrl.includes('undefined')) {
-        baseUrl = window.parent.location.origin + window.parent.location.pathname;
+    // 현재 페이지의 주소를 가져와서 파라미터만 붙임
+    const searchParams = `?interpret_upper=${u}&interpret_lower=${l}&interpret_moving=${m}`;
+    
+    // target="_top" 효과를 내기 위해 window.top.location 사용
+    // 브라우저 보안에 가장 덜 걸리는 방식입니다.
+    try {
+        window.top.location.href = window.top.location.origin + window.top.location.pathname + searchParams;
+    } catch(e) {
+        // 보안 에러가 날 경우를 대비해 최후의 수단으로 window.open 사용
+        window.open(searchParams, "_top");
     }
-    
-    const targetUrl = `${baseUrl}?interpret_upper=${upper}&interpret_lower=${lower}&interpret_moving=${moving}`;
-    
-    // 부모 창 이동 (보안 차단을 피하기 위해 _top 타겟 사용)
-    window.open(targetUrl, "_top");
 }
 
 function renderOriginal() {
