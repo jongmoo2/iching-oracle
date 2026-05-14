@@ -92,6 +92,7 @@ def load_app():
     # JS 통합 (+ 연산자로 연결)
     combined_js = (
         '<script>\n'
+        + 'window.STREAMLIT_APP_URL = window.parent.location.href.split("?")[0];\n'
         + api_key_js + '\n'
         + data_js + '\n'
         + dict_js + '\n'

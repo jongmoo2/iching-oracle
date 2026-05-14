@@ -90,19 +90,24 @@ function setupGeminiKey() {
 }
 
 async function callGeminiAPI(promptText) {
-    const baseUrl = window.location.origin + window.location.pathname;
+    // Streamlit 앱의 실제 URL을 사용하여 백엔드 호출
+    const baseUrl = window.STREAMLIT_APP_URL || window.location.origin + window.location.pathname;
     const fetchUrl = `${baseUrl}?gemini_prompt=${encodeURIComponent(promptText)}`;
 
     try {
         const response = await fetch(fetchUrl);
         const fullText = await response.text();
         
-        // 정규식을 사용하여 마커 사이의 내용만 추출 (st.text가 만든 <pre> 태그 대응)
+        // 정규식을 사용하여 마커 사이의 내용만 추출
         const match = fullText.match(/\[\[START\]\]([\s\S]*?)\[\[END\]\]/);
         
         if (!match) {
-            console.error("Raw Response:", fullText);
-            throw new Error("서버 응답 마커를 찾을 수 없습니다.");
+            console.error("Raw Response Snippet:", fullText.substring(0, 500));
+            // 만약 스트림릿 에러 페이지가 돌아왔다면 그 내용을 요약해서 보여줌
+            if (fullText.includes("Streamlit")) {
+                throw new Error("스트림릿 서버가 응답했지만 마커가 없습니다. (서버 내부 오류 가능성)");
+            }
+            throw new Error("서버 응답 마커를 찾을 수 없습니다. (응답 길이: " + fullText.length + ")");
         }
 
         const jsonStr = match[1].trim();
