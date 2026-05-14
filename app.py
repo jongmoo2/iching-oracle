@@ -27,14 +27,20 @@ st.markdown("""
     </style>
 """, unsafe_allow_html=True)
 
-api_key = st.secrets.get("GEMINI_API_KEY", "")
+api_key = st.secrets.get("GEMINI_API_KEY", "").strip()
 
 # --- AI 작괘 처리 함수 ---
 def call_gemini_ai(prompt_text):
     if not api_key or api_key == "내_실제_API_키_입력":
         return {"error": "API 키가 설정되지 않았습니다. .streamlit/secrets.toml 파일에 실제 키를 입력했는지 확인해 주세요."}
     
-    url = "https://generativelanguage.googleapis.com/v1/models/gemini-pro:generateContent"
+    # v1beta와 gemini-1.5-flash 조합 (헤더 방식 사용)
+    url = "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent"
+    
+    headers = {
+        "Content-Type": "application/json",
+        "x-goog-api-key": api_key
+    }
     
     # 주역점 전문 프롬프트
     full_prompt = f"""
@@ -54,7 +60,8 @@ def call_gemini_ai(prompt_text):
     
     try:
         resp = requests.post(
-            url + "?key=" + api_key,
+            url,
+            headers=headers,
             json={
                 "contents": [{"parts": [{"text": full_prompt}]}],
                 "generationConfig": {"temperature": 0.7}
