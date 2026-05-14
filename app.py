@@ -25,7 +25,7 @@ api_key = st.secrets.get("GEMINI_API_KEY", "")
 if "gemini_prompt" in st.query_params:
     prompt = st.query_params["gemini_prompt"]
     if api_key:
-        url = "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-8b:generateContent"
+        url = "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent"
         try:
             resp = requests.post(
                 url + "?key=" + api_key,
@@ -80,8 +80,8 @@ def load_app():
         '<style>' + css + '\n' + body_override + '</style>'
     )
 
-    # API 키 전역 변수 선언 (+ 연산자로 연결, f-string 사용 안 함)
-    api_key_js = 'window.STREAMLIT_API_KEY = "' + api_key.replace('"', '\\"') + '";'
+    # API 키 전역 변수 제거 (보안을 위해 서버에서만 사용)
+    api_key_js = 'window.STREAMLIT_API_KEY = "";'
 
     # JS 통합 (+ 연산자로 연결)
     combined_js = (

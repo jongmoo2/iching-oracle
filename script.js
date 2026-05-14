@@ -78,16 +78,7 @@ const interpretationText = document.getElementById('interpretation-text');
 // --- Gemini API Configuration ---
 const GEMINI_API_URL = "https://generativelanguage.googleapis.com/v1/models/gemini-1.5-flash:generateContent";
 
-function getGeminiApiKey() {
-    let key = localStorage.getItem('gemini_api_key');
-    if (!key) {
-        key = prompt("Google AI Studio에서 발급받은 Gemini API 키를 입력해주세요.\n(키는 브라우저에만 저장되며 외부로 전송되지 않습니다.)");
-        if (key) {
-            localStorage.setItem('gemini_api_key', key.trim());
-        }
-    }
-    return key;
-}
+// API 키는 이제 서버(app.py)에서 보안 처리되므로 프론트엔드에서 체크할 필요가 없습니다.
 
 function setupGeminiKey() {
     const currentKey = localStorage.getItem('gemini_api_key') || "";
@@ -258,8 +249,7 @@ async function submitSituation() {
         return;
     }
 
-    const apiKey = getGeminiApiKey();
-    if (!apiKey) return;
+    // API 키는 서버에서 보안 처리됨
 
     // Show loading
     document.getElementById('situation-submit-btn').disabled = true;
@@ -446,8 +436,7 @@ function showInterpretation() {
 }
 
 async function requestAIInterpretation() {
-    const apiKey = getGeminiApiKey();
-    if (!apiKey) return;
+    // API 키는 서버에서 보안 처리됨
 
     const btn = document.querySelector('#ai-controls button');
     if(btn) {
