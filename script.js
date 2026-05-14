@@ -448,6 +448,8 @@ function showInterpretation() {
             const u = divinationData.upper;
             const l = divinationData.lower;
             const m = divinationData.moving;
+            const searchParams = `?interpret_upper=${u}&interpret_lower=${l}&interpret_moving=${m}`;
+            
             // 부모 창(스트림릿 앱)의 주소를 확실하게 찾기
             let baseUrl = document.referrer.split('?')[0];
             if (!baseUrl || baseUrl === "") baseUrl = "./";
