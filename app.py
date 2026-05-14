@@ -34,13 +34,8 @@ def call_gemini_ai(prompt_text):
     if not api_key or api_key == "내_실제_API_키_입력":
         return {"error": "API 키가 설정되지 않았습니다. .streamlit/secrets.toml 파일에 실제 키를 입력했는지 확인해 주세요."}
     
-    # v1beta와 gemini-1.5-flash 조합 (헤더 방식 사용)
-    url = "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent"
-    
-    headers = {
-        "Content-Type": "application/json",
-        "x-goog-api-key": api_key
-    }
+    # 최신 모델명(latest)과 v1beta 조합
+    url = "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent"
     
     # 주역점 전문 프롬프트
     full_prompt = f"""
@@ -60,8 +55,7 @@ def call_gemini_ai(prompt_text):
     
     try:
         resp = requests.post(
-            url,
-            headers=headers,
+            f"{url}?key={api_key}",
             json={
                 "contents": [{"parts": [{"text": full_prompt}]}],
                 "generationConfig": {"temperature": 0.7}
