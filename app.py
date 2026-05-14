@@ -57,8 +57,8 @@ def load_app():
     # data.js 안의 \\n 이 f-string에서 실제 줄바꿈으로 변환 → JS SyntaxError
     body_override = (
         'body {'
-        '  justify-content: flex-start !important;'
-        '  padding-top: 1.5rem !important;'
+        '  justify-content: center !important;'
+        '  padding-top: 0 !important;'
         '  min-height: unset !important;'
         '}'
     )
