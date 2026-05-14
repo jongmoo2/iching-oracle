@@ -24,10 +24,10 @@ if "gemini_prompt" in params:
                 timeout=30
             )
             # 스트림릿 서식을 모두 무시하고 '순수 JSON'만 텍스트로 출력
-            st.text(json.dumps(resp.json()))
+            st.write(f"[[START]]{json.dumps(resp.json())}[[END]]")
         except Exception as e:
-            st.text(json.dumps({"error": str(e)}))
-    st.stop() # 페이지 렌더링을 하지 않고 여기서 멈춤
+            st.write(f"[[START]]{json.dumps({'error': str(e)})}[[END]]")
+    st.stop()
 
 # ── 앱 화면 로드 ──────────────────────────────────────────
 def load_app():
