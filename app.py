@@ -55,26 +55,26 @@ def load_app():
     # CSS 인라인 주입 + body 밀림 수정
     # ★ f-string 절대 사용 금지 ★
     # data.js 안의 \\n 이 f-string에서 실제 줄바꿈으로 변환 → JS SyntaxError
-body_override = (
-    'html { height:100%; margin:0; }'
-    'body {'
-    '  display:flex;'
-    '  flex-direction:column;'
-    '  align-items:flex-start !important;'
-    '  justify-content:flex-start !important;'
-    '  padding:0 !important;'
-    '  margin:0 !important;'
-    '  min-height:100vh !important;'
-    '}'
-    '.stApp {'
-    '  display:flex;'
-    '  flex-direction:column;'
-    '  align-items:flex-start !important;'
-    '  justify-content:flex-start !important;'
-    '  padding:0 !important;'
-    '  margin:0 !important;'
-    '}'
-)
+    body_override = (
+        'html { height:100%; margin:0; }'
+        'body {'
+        '  display:flex;'
+        '  flex-direction:column;'
+        '  align-items:flex-start !important;'
+        '  justify-content:flex-start !important;'
+        '  padding:0 !important;'
+        '  margin:0 !important;'
+        '  min-height:100vh !important;'
+        '}'
+        '.stApp {'
+        '  display:flex;'
+        '  flex-direction:column;'
+        '  align-items:flex-start !important;'
+        '  justify-content:flex-start !important;'
+        '  padding:0 !important;'
+        '  margin:0 !important;'
+        '}'
+    )
     html = html.replace(
         '<link rel="stylesheet" href="style.css">',
         '<style>' + css + '\n' + body_override + '</style>'
