@@ -497,39 +497,17 @@ function showInterpretation() {
 }
 
 async function requestAIInterpretation() {
-    // API 키는 서버에서 보안 처리됨
-
-    const btn = document.querySelector('#ai-controls button');
-    if(btn) {
-        btn.disabled = true;
-        btn.innerText = "해설 작성 중...";
-    }
+    // 본괘 및 동효 정보를 URL 파라미터로 담아 부모 창(스트림릿) 새로고침
+    const upper = divinationData.upper;
+    const lower = divinationData.lower;
+    const moving = divinationData.moving;
     
-    const loadingEl = document.getElementById('ai-loading');
-    if (loadingEl) {
-        loadingEl.style.display = 'block';
-        loadingEl.scrollIntoView({ behavior: 'smooth' });
-    }
-    if(document.getElementById('ai-interpretation')) document.getElementById('ai-interpretation').style.display = 'none';
+    // 현재 URL의 기본 경로만 추출 (부모 창 기준)
+    const baseUrl = window.parent.location.origin + window.parent.location.pathname;
+    const targetUrl = `${baseUrl}?interpret_upper=${upper}&interpret_lower=${lower}&interpret_moving=${moving}`;
     
-    const hex = HEXAGRAM_TABLE[divinationData.upper][divinationData.lower];
-    
-    const prompt = `당신은 주역(I Ching) 전문가입니다. 방금 점을 쳐서 본괘로 '${hex.name}(${hex.hanja})' 괘를 얻었고, 제${divinationData.moving}효가 동효로 나왔습니다.\n이 괘와 동효가 의미하는 바를 현대인의 관점에서 이해하기 쉽고 명확하게 풀이해주세요.\n\n반드시 다음 형식의 JSON으로만 반환해주세요:\n{\n  "explanation": "해당 괘와 동효에 대한 현대적이고 직관적인 해설 (한국어)"\n}`;
-    
-    try {
-        const result = await callGeminiAPI(prompt);
-        if(document.getElementById('ai-text')) document.getElementById('ai-text').innerText = result.explanation;
-        if(document.getElementById('ai-controls')) document.getElementById('ai-controls').style.display = 'none';
-        if(document.getElementById('ai-interpretation')) document.getElementById('ai-interpretation').style.display = 'block';
-    } catch (error) {
-        alert(error.message);
-    } finally {
-        if(btn) {
-            btn.disabled = false;
-            btn.innerText = "AI 해설 보기";
-        }
-        if(loadingEl) loadingEl.style.display = 'none';
-    }
+    // 부모 창 이동 (새로고침 효과)
+    window.parent.location.href = targetUrl;
 }
 
 function renderOriginal() {

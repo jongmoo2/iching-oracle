@@ -80,6 +80,30 @@ def call_gemini_ai(prompt_text):
     except Exception as e:
         return {"error": f"AI 분석 중 오류가 발생했습니다: {str(e)}"}
 
+# --- AI 결과 및 해설 처리 (Query Params 확인) ---
+if "interpret_upper" in st.query_params:
+    u = int(st.query_params.get("interpret_upper"))
+    l = int(st.query_params.get("interpret_lower"))
+    m = int(st.query_params.get("interpret_moving"))
+    
+    # AI 해설용 프롬프트 생성
+    interpret_prompt = f"""
+    주역 본괘 상괘번호 {u}, 하괘번호 {l}, 동효 {m}번이 나왔습니다.
+    이 괘의 의미와 동효의 변화를 현대인의 삶에 비추어 아주 명확하고 직관적으로 풀이해주세요.
+    결과는 반드시 다음 형식의 JSON으로만 반환해주세요:
+    {{
+      "upper": {u},
+      "lower": {l},
+      "moving": {m},
+      "rationale": "본괘와 지괘의 관계 분석 (한국어)",
+      "explanation": "이 점괘가 주는 현대적인 조언과 해설 (한국어)"
+    }}
+    """
+    with st.spinner("AI 해설을 작성 중입니다..."):
+        st.session_state.ai_result = call_gemini_ai(interpret_prompt)
+        # 파라미터 제거 (뒤로가기 시 중복 실행 방지)
+        st.query_params.clear()
+
 # --- 세션 상태 초기화 ---
 if "ai_result" not in st.session_state:
     st.session_state.ai_result = None
