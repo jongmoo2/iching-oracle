@@ -25,7 +25,8 @@ api_key = st.secrets.get("GEMINI_API_KEY", "")
 if "gemini_prompt" in st.query_params:
     prompt = st.query_params["gemini_prompt"]
     if api_key:
-        url = "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent"
+        # v1 정식 버전 주소 사용
+        url = "https://generativelanguage.googleapis.com/v1/models/gemini-1.5-flash:generateContent"
         try:
             resp = requests.post(
                 url + "?key=" + api_key,
@@ -35,9 +36,14 @@ if "gemini_prompt" in st.query_params:
                 },
                 timeout=30
             )
-            st.text("[[START]]" + json.dumps(resp.json()) + "[[END]]")
+            # 응답 데이터가 JSON인지 확인 후 전송
+            result = resp.json()
+            st.text("[[START]]" + json.dumps(result) + "[[END]]")
         except Exception as e:
-            st.text("[[START]]" + json.dumps({"error": str(e)}) + "[[END]]")
+            st.text("[[START]]" + json.dumps({"error": {"message": str(e)}}) + "[[END]]")
+    else:
+        # API 키가 없는 경우 에러 전송
+        st.text("[[START]]" + json.dumps({"error": {"message": "API 키를 찾을 수 없습니다. secrets 설정을 확인하세요."}}) + "[[END]]")
     st.stop()
 
 def load_app():
