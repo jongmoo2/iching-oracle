@@ -161,7 +161,6 @@ function handleInjectedAIResult(result) {
     showInterpretation();
 
     // AI 해설 표시 (직접 받아온 해설)
-    if (document.getElementById('ai-controls')) document.getElementById('ai-controls').style.display = 'none';
     if (document.getElementById('ai-interpretation')) document.getElementById('ai-interpretation').style.display = 'block';
     if (document.getElementById('ai-text')) document.getElementById('ai-text').innerText = result.explanation;
 
@@ -322,7 +321,6 @@ async function submitSituation() {
     }
 
     if (document.getElementById('ai-interpretation')) document.getElementById('ai-interpretation').style.display = 'none';
-    if (document.getElementById('ai-controls')) document.getElementById('ai-controls').style.display = 'none';
 
     originalContainer.style.display = 'none';
     transformedContainer.style.display = 'none';
@@ -352,9 +350,8 @@ async function submitSituation() {
 
         // 전통 해설 렌더링
         showInterpretation();
-
         // AI 해설 표시 (직접 받아온 해설)
-        if (document.getElementById('ai-controls')) document.getElementById('ai-controls').style.display = 'none';
+
         if (document.getElementById('ai-interpretation')) document.getElementById('ai-interpretation').style.display = 'block';
         if (document.getElementById('ai-text')) document.getElementById('ai-text').innerText = result.explanation;
 
@@ -439,28 +436,7 @@ function showInterpretation() {
 
     interpretationText.innerText = "【 괘사 (卦辭) 】\n" + gwaesaText + "\n\n【 동효 (動爻) 】\n" + hyosaText;
 
-    // AI 관련 초기화 (상황작괘가 아닐 경우 버튼 표시)
-    if (currentMode !== 'situation') {
-        if (document.getElementById('ai-interpretation')) document.getElementById('ai-interpretation').style.display = 'none';
 
-        const aiControls = document.getElementById('ai-controls');
-        if (aiControls) {
-            const u = divinationData.upper;
-            const l = divinationData.lower;
-            const m = divinationData.moving;
-            const searchParams = `?interpret_upper=${u}&interpret_lower=${l}&interpret_moving=${m}`;
-
-            // 부모 창(스트림릿 앱)의 주소를 확실하게 찾기
-            let baseUrl = document.referrer.split('?')[0];
-            if (!baseUrl || baseUrl === "") baseUrl = "./";
-
-            const targetUrl = baseUrl + searchParams;
-
-            // 버튼을 <a> 링크로 교체 (target="_top"으로 부모 창 제어)
-            aiControls.innerHTML = `<a href="${targetUrl}" target="_top" class="btn-mystic" style="text-decoration:none; display:inline-block; text-align:center; width:100%; box-sizing:border-box;">AI 해설 보기</a>`;
-            aiControls.style.display = 'block';
-        }
-    }
 
     // 2. 물상표 구성
     if (typeof TRIGRAM_PROPERTIES !== 'undefined') {
@@ -512,22 +488,7 @@ function showInterpretation() {
 
     interpretationContainer.style.display = 'block';
 
-    // AI 관련 초기화 (상황작괘가 아닐 경우 버튼 표시)
-    if (currentMode !== 'situation') {
-        if (document.getElementById('ai-interpretation')) document.getElementById('ai-interpretation').style.display = 'none';
 
-        const aiControls = document.getElementById('ai-controls');
-        if (aiControls) {
-            const u = divinationData.upper;
-            const l = divinationData.lower;
-            const m = divinationData.moving;
-            const searchParams = `?interpret_upper=${u}&interpret_lower=${l}&interpret_moving=${m}`;
-
-            // 버튼을 <a> 링크로 교체하여 브라우저 보안 차단을 완벽히 우회 (target="_top" 필수)
-            aiControls.innerHTML = `<a href="${searchParams}" target="_top" class="btn-mystic" style="text-decoration:none; display:inline-block; text-align:center; width:100%; box-sizing:border-box;">AI 해설 보기</a>`;
-            aiControls.style.display = 'block';
-        }
-    }
 }
 
 // 기존 함수는 이제 필요 없으므로 삭제합니다.
@@ -659,7 +620,7 @@ function reset() {
     }
 
     if (document.getElementById('ai-interpretation')) document.getElementById('ai-interpretation').style.display = 'none';
-    if (document.getElementById('ai-controls')) document.getElementById('ai-controls').style.display = 'none';
+
     if (document.getElementById('ai-loading')) document.getElementById('ai-loading').style.display = 'none';
 }
 

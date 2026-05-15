@@ -80,39 +80,7 @@ def call_gemini_ai(prompt_text):
     except Exception as e:
         return {"error": f"AI 분석 중 오류가 발생했습니다: {str(e)}"}
 
-# --- AI 결과 및 해설 처리 (Query Params 확인) ---
-params = st.query_params.to_dict()
-if "interpret_upper" in params:
-    try:
-        u = int(params.get("interpret_upper", 1))
-        l = int(params.get("interpret_lower", 1))
-        m = int(params.get("interpret_moving", 1))
-        
-        # AI 해설용 프롬프트 (전통적 괘풀이 기반의 현대적 조언 강조)
-        interpret_prompt = f"""
-        당신은 주역(I Ching) 전문가입니다. 방금 점을 쳐서 다음 결과를 얻었습니다:
-        - 본괘 상괘번호: {u}
-        - 본괘 하괘번호: {l}
-        - 동효(변하는 효): {m}번
-        
-        이 결과를 바탕으로 현재 질문자가 마주한 상황에 대해 현대적이고 직관적인 조언을 작성해주세요. 
-        단순한 괘의 설명보다는 실생활에서 어떻게 행동해야 할지에 집중해주세요.
-        
-        결과는 반드시 다음 형식의 JSON으로만 반환해주세요:
-        {{
-          "upper": {u},
-          "lower": {l},
-          "moving": {m},
-          "rationale": "괘의 형상과 효의 변화 분석 (한국어)",
-          "explanation": "질문자를 위한 현대적인 조언과 해결책 (한국어)"
-        }}
-        """
-        with st.spinner("AI가 깊은 이치를 풀이하고 있습니다..."):
-            st.session_state.ai_result = call_gemini_ai(interpret_prompt)
-            # 파라미터 초기화 (중복 호출 방지)
-            st.query_params.clear()
-    except Exception as e:
-        st.error(f"파라미터 처리 중 오류 발생: {str(e)}")
+
 
 # --- 세션 상태 초기화 ---
 if "ai_result" not in st.session_state:
