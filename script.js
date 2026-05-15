@@ -67,13 +67,7 @@ let divinationData = {
 let manualData = { upper: null, lower: null, moving: null };
 let currentMode = 'random'; // 'random' | 'manual' | 'situation'
 
-const drawBtn = document.getElementById('draw-btn');
-const resetBtn = document.getElementById('reset-btn');
-const statusMsg = document.getElementById('status-msg');
-const originalContainer = document.getElementById('original-container');
-const transformedContainer = document.getElementById('transformed-container');
-const interpretationContainer = document.getElementById('interpretation-container');
-const interpretationText = document.getElementById('interpretation-text');
+let drawBtn, resetBtn, statusMsg, originalContainer, transformedContainer, interpretationContainer, interpretationText;
 
 // --- Gemini API Configuration ---
 const GEMINI_API_URL = "https://generativelanguage.googleapis.com/v1/models/gemini-1.5-flash:generateContent";
@@ -175,17 +169,7 @@ function handleInjectedAIResult(result) {
     }, 500);
 }
 
-function init() {
-    drawBtn.addEventListener('click', handleDraw);
-    resetBtn.addEventListener('click', reset);
 
-    // 파이썬에서 주입된 AI 결과가 있는지 확인
-    if (window.AI_INJECT_DATA) {
-        handleInjectedAIResult(window.AI_INJECT_DATA);
-    }
-}
-
-init();
 
 // ── 모드 전환 ──────────────────────────────────────────
 function switchMode(mode) {
@@ -632,4 +616,29 @@ function reset() {
     if (document.getElementById('ai-interpretation')) document.getElementById('ai-interpretation').style.display = 'none';
 
     if (document.getElementById('ai-loading')) document.getElementById('ai-loading').style.display = 'none';
+}
+
+function init() {
+    drawBtn = document.getElementById('draw-btn');
+    resetBtn = document.getElementById('reset-btn');
+    statusMsg = document.getElementById('status-msg');
+    originalContainer = document.getElementById('original-container');
+    transformedContainer = document.getElementById('transformed-container');
+    interpretationContainer = document.getElementById('interpretation-container');
+    interpretationText = document.getElementById('interpretation-text');
+
+    if (drawBtn) drawBtn.addEventListener('click', handleDraw);
+    if (resetBtn) resetBtn.addEventListener('click', reset);
+
+    // 파이썬에서 주입된 AI 결과가 있는지 확인
+    if (window.AI_INJECT_DATA) {
+        handleInjectedAIResult(window.AI_INJECT_DATA);
+    }
+}
+
+// DOM이 완전히 로드된 후 초기화 수행
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', init);
+} else {
+    init();
 }
