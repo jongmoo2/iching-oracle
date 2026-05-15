@@ -35,7 +35,7 @@ def call_gemini_ai(prompt_text):
         return {"error": "API 키가 설정되지 않았습니다. .streamlit/secrets.toml 파일에 실제 키를 입력했는지 확인해 주세요."}
     
     # 목록에서 확인된 정확한 별칭 사용
-    url = "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-001:generateContent"
+    url = "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent"
     
     # 주역점 전문 프롬프트
     full_prompt = f"""
