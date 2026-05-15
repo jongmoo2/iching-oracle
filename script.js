@@ -70,7 +70,7 @@ let currentMode = 'random'; // 'random' | 'manual' | 'situation'
 let drawBtn, resetBtn, statusMsg, originalContainer, transformedContainer, interpretationContainer, interpretationText;
 
 // --- Gemini API Configuration ---
-const GEMINI_API_URL = "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent";
+const GEMINI_API_URL = "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-001:generateContent";
 
 // API 키는 이제 서버(app.py)에서 보안 처리되므로 프론트엔드에서 체크할 필요가 없습니다.
 
