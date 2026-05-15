@@ -619,6 +619,7 @@ function reset() {
 }
 
 function init() {
+    console.log("주역점 앱 초기화 시작...");
     drawBtn = document.getElementById('draw-btn');
     resetBtn = document.getElementById('reset-btn');
     statusMsg = document.getElementById('status-msg');
@@ -627,11 +628,15 @@ function init() {
     interpretationContainer = document.getElementById('interpretation-container');
     interpretationText = document.getElementById('interpretation-text');
 
-    if (drawBtn) drawBtn.addEventListener('click', handleDraw);
-    if (resetBtn) resetBtn.addEventListener('click', reset);
+    // HTML에 onclick을 직접 추가했으므로 여기서 addEventListener는 필요 없습니다.
+    // 하지만 변수들이 제대로 할당되었는지 확인합니다.
+    if (!drawBtn || !resetBtn) {
+        console.error("필수 버튼 요소를 찾을 수 없습니다.");
+    }
 
     // 파이썬에서 주입된 AI 결과가 있는지 확인
     if (window.AI_INJECT_DATA) {
+        console.log("AI 주입 데이터 발견:", window.AI_INJECT_DATA);
         handleInjectedAIResult(window.AI_INJECT_DATA);
     }
 }
