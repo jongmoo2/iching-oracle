@@ -13,7 +13,7 @@ const TRIGRAM_NAMES = {
     1: { name: '건', hanja: '乾', nature: '天' },
     2: { name: '태', hanja: '兌', nature: '澤' },
     3: { name: '리', hanja: '離', nature: '火' },
-    4: { name: '진', hanja: '진', nature: '雷' },
+    4: { name: '진', hanja: '震', nature: '雷' },
     5: { name: '손', hanja: '巽', nature: '風' },
     6: { name: '감', hanja: '坎', nature: '水' },
     7: { name: '간', hanja: '艮', nature: '山' },
@@ -163,6 +163,11 @@ function handleInjectedAIResult(result) {
     // AI 해설 표시 (직접 받아온 해설)
     if (document.getElementById('ai-interpretation')) document.getElementById('ai-interpretation').style.display = 'block';
     if (document.getElementById('ai-text')) document.getElementById('ai-text').innerText = result.explanation;
+    
+    // 버튼 상태 업데이트: 다시 치기 버튼 표시
+    currentState = 3;
+    drawBtn.style.display = 'none';
+    resetBtn.style.display = 'inline-block';
 
     // 화면 하단 결과 영역으로 부드럽게 스크롤
     setTimeout(() => {
@@ -354,6 +359,11 @@ async function submitSituation() {
 
         if (document.getElementById('ai-interpretation')) document.getElementById('ai-interpretation').style.display = 'block';
         if (document.getElementById('ai-text')) document.getElementById('ai-text').innerText = result.explanation;
+
+        // 버튼 상태 업데이트: 다시 치기 버튼 표시
+        currentState = 3;
+        drawBtn.style.display = 'none';
+        resetBtn.style.display = 'inline-block';
 
     } catch (error) {
         alert(error.message);
@@ -623,5 +633,3 @@ function reset() {
 
     if (document.getElementById('ai-loading')) document.getElementById('ai-loading').style.display = 'none';
 }
-
-init();
