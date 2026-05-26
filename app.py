@@ -39,7 +39,7 @@ def call_gemini_ai(prompt_text):
     
     # --- 현재 한국 시간의 시, 분, 초를 정수로 추출 ---
     import datetime
-    utc_now = datetime.datetime.utcNow()
+    utc_now = datetime.datetime.now()
     kor_now = utc_now + datetime.timedelta(hours=9)
     current_time_data = {
         "hour": kor_now.hour,
