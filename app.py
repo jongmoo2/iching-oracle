@@ -22,8 +22,13 @@ st.markdown("""
         color: #e0e0e0 !important; /* 글자 색상을 연회색으로 변경 */
         font-weight: 500;          /* 글자를 조금 더 도톰하게 조절 */
     }
-    .stSpinner svg {
-        stroke: #ffd700 !important; /* 돌아가는 휠(스피너) 색상을 주역 분위기의 금색으로 변경 */
+    .stSpinner [data-testid="stSpinnerCube"], 
+    .stSpinner svg, 
+    .stSpinner i,
+    div[role="status"] svg {
+        stroke: #ffd700 !important;
+        color: #ffd700 !important;
+        fill: #ffd700 !important;
     }
             
     /* 펼침 메뉴 스타일 */
