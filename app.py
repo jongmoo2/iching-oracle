@@ -17,6 +17,15 @@ st.markdown("""
     #MainMenu, footer, header { visibility: hidden; height: 0; }
     .block-container { padding: 0 !important; margin: 0 !important; }
     .stApp { background-color: #0a0a0f; }
+    
+    .stSpinner > div > div {
+        color: #ffffff !important; /* 글자 색상을 완전한 흰색으로 변경 */
+        font-weight: 500;          /* 글자를 조금 더 도톰하게 조절 */
+    }
+    .stSpinner svg {
+        stroke: #ffd700 !important; /* 돌아가는 휠(스피너) 색상을 주역 분위기의 금색으로 변경 */
+    }
+            
     /* 펼침 메뉴 스타일 */
     .stExpander { 
         background: rgba(255,255,255,0.05); 
