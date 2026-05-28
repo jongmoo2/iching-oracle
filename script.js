@@ -31,27 +31,27 @@ const HEXAGRAM_TABLE = {
     },
     3: {
         1: { id: 14, name: "화천대유", hanja: "火天大有" }, 2: { id: 38, name: "화택규", hanja: "火澤睽" }, 3: { id: 30, name: "중화리", hanja: "重火離" }, 4: { id: 21, name: "화뢰서합", hanja: "火雷噬嗑" },
-        5: { id: 50, name: "화풍정", hanja: "火風鼎" }, 6: { id: 64, name: "화수미제", hanja: "화수미제" }, 7: { id: 56, name: "화산려", hanja: "火山旅" }, 8: { id: 35, name: "화지진", hanja: "火地晉" }
+        5: { id: 50, name: "화풍정", hanja: "火風鼎" }, 6: { id: 64, name: "화수미제", hanja: "火水未濟" }, 7: { id: 56, name: "화산려", hanja: "火山旅" }, 8: { id: 35, name: "화지진", hanja: "火地晉" }
     },
     4: {
-        1: { id: 34, name: "뇌천대장", hanja: "雷天大壯" }, 2: { id: 54, name: "뇌택귀매", hanja: "雷澤歸妹" }, 3: { id: 55, name: "뇌화풍", hanja: "雷화풍" }, 4: { id: 51, name: "중뢰진", hanja: "重雷震" },
-        5: { id: 32, name: "뇌풍항", hanja: "雷風恒" }, 6: { id: 40, name: "뇌수해", hanja: "雷수해" }, 7: { id: 62, name: "뇌산소과", hanja: "雷山小過" }, 8: { id: 16, name: "뇌지예", hanja: "雷地豫" }
+        1: { id: 34, name: "뇌천대장", hanja: "雷天大壯" }, 2: { id: 54, name: "뇌택귀매", hanja: "雷澤歸妹" }, 3: { id: 55, name: "뇌화풍", hanja: "雷火風" }, 4: { id: 51, name: "중뢰진", hanja: "重雷震" },
+        5: { id: 32, name: "뇌풍항", hanja: "雷風恒" }, 6: { id: 40, name: "뇌수해", hanja: "雷水解" }, 7: { id: 62, name: "뇌산소과", hanja: "雷山小過" }, 8: { id: 16, name: "뇌지예", hanja: "雷地豫" }
     },
     5: {
-        1: { id: 9, name: "풍천소축", hanja: "風天소축" }, 2: { id: 61, name: "풍택중부", hanja: "風澤中孚" }, 3: { id: 37, name: "풍화가인", hanja: "風火家人" }, 4: { id: 42, name: "풍뢰익", hanja: "風雷益" },
-        5: { id: 57, name: "중손풍", hanja: "重風巽" }, 6: { id: 59, name: "풍수환", hanja: "風水渙" }, 7: { id: 53, name: "풍산점", hanja: "風山漸" }, 8: { id: 20, name: "풍지관", hanja: "風지관" }
+        1: { id: 9, name: "풍천소축", hanja: "風天小畜" }, 2: { id: 61, name: "풍택중부", hanja: "風澤中孚" }, 3: { id: 37, name: "풍화가인", hanja: "風火家人" }, 4: { id: 42, name: "풍뢰익", hanja: "風雷益" },
+        5: { id: 57, name: "중손풍", hanja: "重風巽" }, 6: { id: 59, name: "풍수환", hanja: "風水渙" }, 7: { id: 53, name: "풍산점", hanja: "風山漸" }, 8: { id: 20, name: "풍지관", hanja: "風地觀" }
     },
     6: {
         1: { id: 5, name: "수천수", hanja: "水天需" }, 2: { id: 60, name: "수택절", hanja: "水澤節" }, 3: { id: 63, name: "수화기제", hanja: "水火旣濟" }, 4: { id: 3, name: "수뢰둔", hanja: "水雷屯" },
-        5: { id: 48, name: "수풍정", hanja: "水風井" }, 6: { id: 29, name: "중수감", hanja: "重수감" }, 7: { id: 39, name: "수산건", hanja: "水山蹇" }, 8: { id: 8, name: "수지비", hanja: "水지비" }
+        5: { id: 48, name: "수풍정", hanja: "水風井" }, 6: { id: 29, name: "중수감", hanja: "重水坎" }, 7: { id: 39, name: "수산건", hanja: "水山蹇" }, 8: { id: 8, name: "수지비", hanja: "水地比" }
     },
     7: {
-        1: { id: 26, name: "산천대축", hanja: "山天大축" }, 2: { id: 41, name: "산택손", hanja: "山澤損" }, 3: { id: 22, name: "산화비", hanja: "山火賁" }, 4: { id: 27, name: "산뢰이", hanja: "山雷頤" },
-        5: { id: 18, name: "산풍고", hanja: "山風蠱" }, 6: { id: 4, name: "산수몽", hanja: "山수몽" }, 7: { id: 52, name: "중산간", hanja: "重山艮" }, 8: { id: 23, name: "산지박", hanja: "山지박" }
+        1: { id: 26, name: "산천대축", hanja: "山天大蓄" }, 2: { id: 41, name: "산택손", hanja: "山澤損" }, 3: { id: 22, name: "산화비", hanja: "山火賁" }, 4: { id: 27, name: "산뢰이", hanja: "山雷頤" },
+        5: { id: 18, name: "산풍고", hanja: "山風蠱" }, 6: { id: 4, name: "산수몽", hanja: "山水蒙" }, 7: { id: 52, name: "중산간", hanja: "重山艮" }, 8: { id: 23, name: "산지박", hanja: "山地剥" }
     },
     8: {
         1: { id: 11, name: "지천태", hanja: "地天泰" }, 2: { id: 19, name: "지택임", hanja: "地澤臨" }, 3: { id: 36, name: "지화명이", hanja: "地火明夷" }, 4: { id: 24, name: "지뢰복", hanja: "地雷復" },
-        5: { id: 46, name: "지풍승", hanja: "地風升" }, 6: { id: 7, name: "지수사", hanja: "地水師" }, 7: { id: 15, name: "지산겸", hanja: "地山謙" }, 8: { id: 2, name: "중지곤", hanja: "重지곤" }
+        5: { id: 46, name: "지풍승", hanja: "地風升" }, 6: { id: 7, name: "지수사", hanja: "地水師" }, 7: { id: 15, name: "지산겸", hanja: "地山謙" }, 8: { id: 2, name: "중지곤", hanja: "重地坤" }
     }
 };
 
