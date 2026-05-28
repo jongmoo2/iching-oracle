@@ -19,7 +19,7 @@ st.markdown("""
     .stApp { background-color: #0a0a0f; }
     
     .stSpinner > div > div {
-        color: #ffffff !important; /* 글자 색상을 완전한 흰색으로 변경 */
+        color: #ffd700 !important; /* 글자 색상을 금색으로 변경 */
         font-weight: 500;          /* 글자를 조금 더 도톰하게 조절 */
     }
     .stSpinner [data-testid="stSpinnerCube"], 
