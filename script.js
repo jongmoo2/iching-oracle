@@ -39,7 +39,7 @@ const HEXAGRAM_TABLE = {
     },
     5: {
         1: { id: 9, name: "풍천소축", hanja: "風天小畜" }, 2: { id: 61, name: "풍택중부", hanja: "風澤中孚" }, 3: { id: 37, name: "풍화가인", hanja: "風火家人" }, 4: { id: 42, name: "풍뢰익", hanja: "風雷益" },
-        5: { id: 57, name: "중손풍", hanja: "重風巽" }, 6: { id: 59, name: "풍수환", hanja: "風水渙" }, 7: { id: 53, name: "풍산점", hanja: "風山漸" }, 8: { id: 20, name: "풍지관", hanja: "風地觀" }
+        5: { id: 57, name: "중풍손", hanja: "重風巽" }, 6: { id: 59, name: "풍수환", hanja: "風水渙" }, 7: { id: 53, name: "풍산점", hanja: "風山漸" }, 8: { id: 20, name: "풍지관", hanja: "風地觀" }
     },
     6: {
         1: { id: 5, name: "수천수", hanja: "水天需" }, 2: { id: 60, name: "수택절", hanja: "水澤節" }, 3: { id: 63, name: "수화기제", hanja: "水火旣濟" }, 4: { id: 3, name: "수뢰둔", hanja: "水雷屯" },
