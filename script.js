@@ -642,3 +642,52 @@ if (document.readyState === 'loading') {
 } else {
     init();
 }
+
+// ── 십익(十翼) 모달 ──────────────────────────────────────
+const CLASSICS_ORDER = ['繫辭上傳','繫辭下傳','說卦傳','序卦傳','雜卦傳'];
+let currentClassicsTab = CLASSICS_ORDER[0];
+
+function openClassics() {
+    const modal = document.getElementById('classics-modal');
+    if (!modal) { console.error('classics-modal 없음'); return; }
+
+    const tabsEl = document.getElementById('classics-tabs');
+    if (tabsEl && !tabsEl.hasChildNodes()) {
+        CLASSICS_ORDER.forEach(key => {
+            const btn = document.createElement('button');
+            btn.className = 'classics-tab-btn' + (key === currentClassicsTab ? ' active' : '');
+            btn.innerText = CLASSICS_TEXT[key].title;
+            btn.onclick = () => switchClassicsTab(key);
+            tabsEl.appendChild(btn);
+        });
+    }
+
+    showClassicsTab(currentClassicsTab);
+    modal.style.display = 'flex';
+    document.body.style.overflow = 'hidden';
+}
+
+function closeClassics() {
+    const modal = document.getElementById('classics-modal');
+    if (modal) modal.style.display = 'none';
+    document.body.style.overflow = '';
+}
+
+function closeClassicsOnBg(e) {
+    if (e.target.id === 'classics-modal') closeClassics();
+}
+
+function switchClassicsTab(key) {
+    currentClassicsTab = key;
+    document.querySelectorAll('.classics-tab-btn').forEach((btn, i) => {
+        btn.classList.toggle('active', CLASSICS_ORDER[i] === key);
+    });
+    showClassicsTab(key);
+}
+
+function showClassicsTab(key) {
+    const contentEl = document.getElementById('classics-content');
+    if (!contentEl) return;
+    contentEl.innerText = CLASSICS_TEXT[key].text;
+    contentEl.scrollTop = 0;
+}
