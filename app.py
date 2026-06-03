@@ -141,6 +141,7 @@ def load_app(ai_data=None):
         dict_js = f.read()
     with open("script.js", "r", encoding="utf-8") as f:
         script_js = f.read()
+    
 
     body_override = (
         'html { height:100%; margin:0; }'
@@ -168,22 +169,29 @@ def load_app(ai_data=None):
     )
 
     # AI 결과 데이터 주입 및 앱 URL 전달
+    # ★ f-string 사용 금지: data_js 안의 \\n이 실제 줄바꿈으로 변환되어 JS SyntaxError 발생
     ai_inject_js = (
-        f"window.AI_INJECT_DATA = {json.dumps(ai_data)};\n"
-        f"window.STREAMLIT_APP_URL = window.location.origin + window.location.pathname;"
+        'window.AI_INJECT_DATA = ' + json.dumps(ai_data) + ';\n'
+        + 'window.STREAMLIT_APP_URL = window.location.origin + window.location.pathname;'
     )
 
-    # JS 통합
+    # classics.js 로드
+    with open("classics.js", "r", encoding="utf-8") as f:
+        classics_js = f.read()
+
+    # JS 통합 (+ 연산자로 연결)
     combined_js = (
         '<script>\n'
+        + 'window.STREAMLIT_API_KEY = "";\n'
         + ai_inject_js + '\n'
-        + 'window.STREAMLIT_API_KEY = "";\n' 
         + data_js + '\n'
         + dict_js + '\n'
+        + classics_js + '\n'
         + script_js + '\n'
         + '</script>'
     )
 
+    html = re.sub(r'<script src="classics\.js"></script>\s*', '', html)
     html = re.sub(r'<script src="data\.js"></script>\s*', '', html)
     html = re.sub(r'<script src="dictionary\.js"></script>\s*', '', html)
     html = html.replace('<script src="script.js"></script>', combined_js)

@@ -20,63 +20,171 @@ const TRIGRAM_NAMES = {
     8: { name: '곤', hanja: '坤', nature: '地' }
 };
 
+// 64 Hexagrams Mapping [Upper][Lower] with King Wen IDs
 const HEXAGRAM_TABLE = {
-    1: {
+    1: { // 상괘 건(天)
         1: { id: 1, name: "중천건", hanja: "重天乾" }, 2: { id: 10, name: "천택리", hanja: "天澤履" }, 3: { id: 13, name: "천화동인", hanja: "天火同人" }, 4: { id: 25, name: "천뢰무망", hanja: "天雷无妄" },
         5: { id: 44, name: "천풍구", hanja: "天風姤" }, 6: { id: 6, name: "천수송", hanja: "天水訟" }, 7: { id: 33, name: "천산둔", hanja: "天山遯" }, 8: { id: 12, name: "천지비", hanja: "天地否" }
     },
-    2: {
+    2: { // 상괘 태(澤)
         1: { id: 43, name: "택천쾌", hanja: "澤天夬" }, 2: { id: 58, name: "중택태", hanja: "重澤兌" }, 3: { id: 49, name: "택화혁", hanja: "澤火革" }, 4: { id: 17, name: "택뢰수", hanja: "澤雷隨" },
         5: { id: 28, name: "택풍대과", hanja: "澤風大過" }, 6: { id: 47, name: "택수곤", hanja: "澤水困" }, 7: { id: 31, name: "택산함", hanja: "澤山咸" }, 8: { id: 45, name: "택지췌", hanja: "澤地萃" }
     },
-    3: {
+    3: { // 상괘 리(火)
         1: { id: 14, name: "화천대유", hanja: "火天大有" }, 2: { id: 38, name: "화택규", hanja: "火澤睽" }, 3: { id: 30, name: "중화리", hanja: "重火離" }, 4: { id: 21, name: "화뢰서합", hanja: "火雷噬嗑" },
         5: { id: 50, name: "화풍정", hanja: "火風鼎" }, 6: { id: 64, name: "화수미제", hanja: "火水未濟" }, 7: { id: 56, name: "화산려", hanja: "火山旅" }, 8: { id: 35, name: "화지진", hanja: "火地晉" }
     },
-    4: {
-        1: { id: 34, name: "뇌천대장", hanja: "雷天大壯" }, 2: { id: 54, name: "뇌택귀매", hanja: "雷澤歸妹" }, 3: { id: 55, name: "뇌화풍", hanja: "雷火風" }, 4: { id: 51, name: "중뢰진", hanja: "重雷震" },
+    4: { // 상괘 진(雷)
+        1: { id: 34, name: "뇌천대장", hanja: "雷天大壯" }, 2: { id: 54, name: "뇌택귀매", hanja: "雷澤歸妹" }, 3: { id: 55, name: "뇌화풍", hanja: "雷火豊" }, 4: { id: 51, name: "중뢰진", hanja: "重雷震" },
         5: { id: 32, name: "뇌풍항", hanja: "雷風恒" }, 6: { id: 40, name: "뇌수해", hanja: "雷水解" }, 7: { id: 62, name: "뇌산소과", hanja: "雷山小過" }, 8: { id: 16, name: "뇌지예", hanja: "雷地豫" }
     },
-    5: {
+    5: { // 상괘 손(風)
         1: { id: 9, name: "풍천소축", hanja: "風天小畜" }, 2: { id: 61, name: "풍택중부", hanja: "風澤中孚" }, 3: { id: 37, name: "풍화가인", hanja: "風火家人" }, 4: { id: 42, name: "풍뢰익", hanja: "風雷益" },
-        5: { id: 57, name: "중풍손", hanja: "重風巽" }, 6: { id: 59, name: "풍수환", hanja: "風水渙" }, 7: { id: 53, name: "풍산점", hanja: "風山漸" }, 8: { id: 20, name: "풍지관", hanja: "風地觀" }
+        5: { id: 57, name: "중손풍", hanja: "重風巽" }, 6: { id: 59, name: "풍수환", hanja: "風水渙" }, 7: { id: 53, name: "풍산점", hanja: "風山漸" }, 8: { id: 20, name: "풍지관", hanja: "風地觀" }
     },
-    6: {
+    6: { // 상괘 감(水)
         1: { id: 5, name: "수천수", hanja: "水天需" }, 2: { id: 60, name: "수택절", hanja: "水澤節" }, 3: { id: 63, name: "수화기제", hanja: "水火旣濟" }, 4: { id: 3, name: "수뢰둔", hanja: "水雷屯" },
         5: { id: 48, name: "수풍정", hanja: "水風井" }, 6: { id: 29, name: "중수감", hanja: "重水坎" }, 7: { id: 39, name: "수산건", hanja: "水山蹇" }, 8: { id: 8, name: "수지비", hanja: "水地比" }
     },
-    7: {
-        1: { id: 26, name: "산천대축", hanja: "山天大蓄" }, 2: { id: 41, name: "산택손", hanja: "山澤損" }, 3: { id: 22, name: "산화비", hanja: "山火賁" }, 4: { id: 27, name: "산뢰이", hanja: "山雷頤" },
-        5: { id: 18, name: "산풍고", hanja: "山風蠱" }, 6: { id: 4, name: "산수몽", hanja: "山水蒙" }, 7: { id: 52, name: "중산간", hanja: "重山艮" }, 8: { id: 23, name: "산지박", hanja: "山地剥" }
+    7: { // 상괘 간(山)
+        1: { id: 26, name: "산천대축", hanja: "山天大畜" }, 2: { id: 41, name: "산택손", hanja: "山澤損" }, 3: { id: 22, name: "산화비", hanja: "山火賁" }, 4: { id: 27, name: "산뢰이", hanja: "山雷頤" },
+        5: { id: 18, name: "산풍고", hanja: "山風蠱" }, 6: { id: 4, name: "산수몽", hanja: "山水蒙" }, 7: { id: 52, name: "중산간", hanja: "重山艮" }, 8: { id: 23, name: "산지박", hanja: "山地剝" }
     },
-    8: {
+    8: { // 상괘 곤(地)
         1: { id: 11, name: "지천태", hanja: "地天泰" }, 2: { id: 19, name: "지택임", hanja: "地澤臨" }, 3: { id: 36, name: "지화명이", hanja: "地火明夷" }, 4: { id: 24, name: "지뢰복", hanja: "地雷復" },
         5: { id: 46, name: "지풍승", hanja: "地風升" }, 6: { id: 7, name: "지수사", hanja: "地水師" }, 7: { id: 15, name: "지산겸", hanja: "地山謙" }, 8: { id: 2, name: "중지곤", hanja: "重地坤" }
     }
 };
 
-let currentState = 0;
-let divinationData = { upper: null, lower: null, moving: null };
+let currentState = 0; // 0: Start, 1: Upper Drawn, 2: Lower Drawn, 3: Moving Drawn
+let divinationData = {
+    upper: null,
+    lower: null,
+    moving: null
+};
+
+// 수동 모드 상태
 let manualData = { upper: null, lower: null, moving: null };
-let currentMode = 'random';
+let currentMode = 'random'; // 'random' | 'manual' | 'situation'
 
 let drawBtn, resetBtn, statusMsg, originalContainer, transformedContainer, interpretationContainer, interpretationText;
 
-// ── 모드 전환 (시간작괘 추가) ──────────────────────────
+// --- Gemini API Configuration ---
+const GEMINI_API_URL = "https://generativelanguage.googleapis.com/v1/models/gemini-1.5-flash:generateContent";
+
+// API 키는 이제 서버(app.py)에서 보안 처리되므로 프론트엔드에서 체크할 필요가 없습니다.
+
+function setupGeminiKey() {
+    const currentKey = localStorage.getItem('gemini_api_key') || "";
+    const newKey = prompt("Gemini API 키를 입력하세요:", currentKey);
+    if (newKey !== null) {
+        localStorage.setItem('gemini_api_key', newKey.trim());
+        alert("API 키가 저장되었습니다.");
+    }
+}
+
+async function callGeminiAPI(promptText) {
+    // Streamlit 앱의 실제 URL을 사용하여 백엔드 호출
+    const baseUrl = window.STREAMLIT_APP_URL || window.location.origin + window.location.pathname;
+    const fetchUrl = `${baseUrl}?gemini_prompt=${encodeURIComponent(promptText)}`;
+
+    try {
+        const response = await fetch(fetchUrl);
+        const fullText = await response.text();
+
+        // 정규식을 사용하여 마커 사이의 내용만 추출
+        const match = fullText.match(/\[\[START\]\]([\s\S]*?)\[\[END\]\]/);
+
+        if (!match) {
+            console.error("Raw Response Snippet:", fullText.substring(0, 500));
+            // 만약 스트림릿 에러 페이지가 돌아왔다면 그 내용을 요약해서 보여줌
+            if (fullText.includes("Streamlit")) {
+                throw new Error("스트림릿 서버가 응답했지만 마커가 없습니다. (서버 내부 오류 가능성)");
+            }
+            throw new Error("서버 응답 마커를 찾을 수 없습니다. (응답 길이: " + fullText.length + ")");
+        }
+
+        const jsonStr = match[1].trim();
+        const data = JSON.parse(jsonStr);
+
+        if (data.error) throw new Error(data.error.message || "API 오류 발생");
+
+        const textResponse = data.candidates[0].content.parts[0].text;
+
+        try {
+            // 마크다운 백틱 제거
+            const cleanedText = textResponse.replace(/```json/g, '').replace(/```/g, '').trim();
+            return JSON.parse(cleanedText);
+        } catch (e) {
+            return { explanation: textResponse };
+        }
+    } catch (error) {
+        console.error("Detailed Error:", error);
+        throw new Error("AI 분석 연결 실패: " + error.message);
+    }
+}
+
+
+function handleInjectedAIResult(result) {
+    if (result.error) {
+        alert(result.error);
+        return;
+    }
+
+    // 결과 탭으로 전환
+    switchMode('random');
+
+    divinationData.upper = result.upper;
+    divinationData.lower = result.lower;
+    divinationData.moving = result.moving;
+
+    // 결과 렌더링
+    originalContainer.style.display = 'block';
+    renderOriginal();
+    renderTransformed();
+    transformedContainer.style.display = 'block';
+
+    // 근거 텍스트 표시
+    const rationaleEl = document.getElementById('rationale-text');
+    if (rationaleEl) {
+        rationaleEl.style.display = 'block';
+        rationaleEl.innerHTML = `<strong>[작괘 근거 - AI 분석]</strong><br>${result.rationale}`;
+    }
+
+    // 전통 해설 렌더링
+    showInterpretation();
+
+    // AI 해설 표시 (직접 받아온 해설)
+    if (document.getElementById('ai-interpretation')) document.getElementById('ai-interpretation').style.display = 'block';
+    if (document.getElementById('ai-text')) document.getElementById('ai-text').innerText = result.explanation;
+    
+    // 버튼 상태 업데이트: 다시 치기 버튼 표시
+    currentState = 3;
+    drawBtn.style.display = 'none';
+    resetBtn.style.display = 'inline-block';
+
+    // 화면 하단 결과 영역으로 부드럽게 스크롤
+    setTimeout(() => {
+        originalContainer.scrollIntoView({ behavior: 'smooth' });
+    }, 500);
+}
+
+
+
+// ── 모드 전환 ──────────────────────────────────────────
 function switchMode(mode) {
     currentMode = mode;
 
     document.getElementById('tab-random').classList.toggle('active', mode === 'random');
     document.getElementById('tab-manual').classList.toggle('active', mode === 'manual');
-    document.getElementById('tab-time').classList.toggle('active', mode === 'time');
     document.getElementById('tab-situation').classList.toggle('active', mode === 'situation');
 
     document.getElementById('manual-area').style.display = mode === 'manual' ? 'block' : 'none';
-    document.getElementById('time-area').style.display = mode === 'time' ? 'block' : 'none';
     document.getElementById('situation-area').style.display = mode === 'situation' ? 'block' : 'none';
     document.getElementById('random-controls').style.display = mode === 'random' ? 'flex' : 'none';
     statusMsg.style.display = mode === 'random' ? 'block' : 'none';
 
+    // 상황작괘 탭의 안내 문구 업데이트
     if (mode === 'situation') {
         document.getElementById('situation-area').innerHTML = `
             <div style="text-align:center; padding: 20px; color: #ffd700; border: 1px dashed rgba(255,215,0,0.3); border-radius: 10px;">
@@ -86,89 +194,31 @@ function switchMode(mode) {
         `;
     }
 
-    if (mode === 'time') {
-        updateLiveTimeDisplay();
-    }
-
+    // 결과 영역 초기화
     reset();
     if (mode === 'manual') resetManual();
-}
-
-// ── 시간작괘 모드 작동 실시간 시간 갱신 ──────────────────
-function updateLiveTimeDisplay() {
-    const timeEl = document.getElementById('time-display');
-    if (!timeEl) return;
-    const now = new Date();
-    timeEl.innerText = `현재 시각: ${now.getFullYear()}년 ${now.getMonth() + 1}월 ${now.getDate()}일 ${now.getHours()}시`;
-}
-
-// ── 시간작괘 핵심 수학적 알고리즘 연산 ──────────────────
-function submitTimeDivination() {
-    const now = new Date();
-    const Y = now.getFullYear();
-    const M = now.getMonth() + 1;
-    const D = now.getDate();
-    const H = now.getHours();
-
-    // 현대 기조식 서기 연도 결합 공식
-    let upperIdx = (Y + M + D) % 8;
-    if (upperIdx === 0) upperIdx = 8;
-
-    let lowerIdx = (Y + M + D + H) % 8;
-    if (lowerIdx === 0) lowerIdx = 8;
-
-    let movingIdx = (Y + M + D + H) % 6;
-    if (movingIdx === 0) movingIdx = 6;
-
-    divinationData.upper = upperIdx;
-    divinationData.lower = lowerIdx;
-    divinationData.moving = movingIdx;
-
-    // 결과 렌더링
-    originalContainer.style.display = 'block';
-    renderOriginal();
-    renderTransformed();
-    transformedContainer.style.display = 'block';
-
-    const rationaleEl = document.getElementById('rationale-text');
-    if (rationaleEl) {
-        rationaleEl.style.display = 'block';
-        rationaleEl.innerHTML = `
-            <strong>[작괘 근거 - 시간 연산]</strong><br>
-            - 기준 연월일시: 서기 ${Y}년 ${M}월 ${D}일 ${H}시<br>
-            - 상괘 연산: (${Y} + ${M} + ${D}) % 8 = 나머지 ${upperIdx} (${TRIGRAM_NAMES[upperIdx].name}·${TRIGRAM_NAMES[upperIdx].nature})<br>
-            - 하괘 연산: (${Y} + ${M} + ${D} + ${H}) % 8 = 나머지 ${lowerIdx} (${TRIGRAM_NAMES[lowerIdx].name}·${TRIGRAM_NAMES[lowerIdx].nature})<br>
-            - 동효 연산: (${Y} + ${M} + ${D} + ${H}) % 6 = 나머지 ${movingIdx}효 동(動)
-        `;
-    }
-
-    showInterpretation();
-    
-    // 시간작괘는 로컬 순수 연산이므로 AI 해설창을 숨겨서 깔끔하게 연출
-    if (document.getElementById('ai-interpretation')) {
-        document.getElementById('ai-interpretation').style.display = 'none';
-    }
-
-    setTimeout(() => {
-        originalContainer.scrollIntoView({ behavior: 'smooth' });
-    }, 300);
 }
 
 // ── 수동 모드: 괘 선택 ──────────────────────────────────
 function selectTrigram(which, value) {
     manualData[which] = value;
+
+    // 버튼 하이라이트
     const groupId = which === 'upper' ? 'upper-buttons' : 'lower-buttons';
     document.querySelectorAll(`#${groupId} .trigram-btn`).forEach((btn, idx) => {
         btn.classList.toggle('selected', idx + 1 === value);
     });
+
     updateManualStatus();
 }
 
 function selectMoving(value) {
     manualData.moving = value;
+
     document.querySelectorAll('#moving-buttons .moving-btn').forEach((btn, idx) => {
         btn.classList.toggle('selected', idx + 1 === value);
     });
+
     updateManualStatus();
 }
 
@@ -196,23 +246,29 @@ function updateManualStatus() {
 }
 
 function submitManual() {
+    // 수동 데이터를 divinationData에 복사 후 공통 렌더 함수 호출
     divinationData.upper = manualData.upper;
     divinationData.lower = manualData.lower;
     divinationData.moving = manualData.moving;
 
+    // 결과 표시
     originalContainer.style.display = 'block';
     renderOriginal();
     renderTransformed();
     transformedContainer.style.display = 'block';
     showInterpretation();
 
+    // 버튼 전환
     document.getElementById('manual-submit-btn').style.display = 'none';
     document.getElementById('manual-reset-btn').style.display = 'inline-block';
+
+    // 선택 버튼 비활성화
     document.querySelectorAll('.trigram-btn, .moving-btn').forEach(btn => btn.disabled = true);
 }
 
 function resetManual() {
     manualData = { upper: null, lower: null, moving: null };
+
     document.querySelectorAll('.trigram-btn, .moving-btn').forEach(btn => {
         btn.classList.remove('selected');
         btn.disabled = false;
@@ -223,64 +279,106 @@ function resetManual() {
     document.getElementById('manual-reset-btn').style.display = 'none';
     document.getElementById('manual-status').innerText = '상괘를 선택하십시오.';
 
+    // 결과 영역 초기화
     originalContainer.style.display = 'none';
     transformedContainer.style.display = 'none';
     interpretationContainer.style.display = 'none';
+    document.getElementById('original-visual').innerHTML = '';
+    document.getElementById('transformed-visual').innerHTML = '';
+    document.getElementById('original-name').innerText = '';
+    document.getElementById('original-hanja').innerText = '';
     divinationData = { upper: null, lower: null, moving: null };
 }
 
-// ── 파이썬 백엔드 호출 데이터 핸들링 ──────────────────────
-function handleInjectedAIResult(result) {
-    if (result.error) {
-        alert(result.error);
+// ── 상황작괘 모드 ──────────────────────────────────────
+async function submitSituation() {
+    const text = document.getElementById('situation-text').value.trim();
+    if (!text) {
+        alert("상황이나 질문을 입력해주세요.");
         return;
     }
 
-    switchMode('random');
+    // API 키는 서버에서 보안 처리됨
 
-    divinationData.upper = result.upper;
-    divinationData.lower = result.lower;
-    divinationData.moving = result.moving;
-
-    originalContainer.style.display = 'block';
-    renderOriginal();
-    renderTransformed();
-    transformedContainer.style.display = 'block';
-
-    const rationaleEl = document.getElementById('rationale-text');
-    if (rationaleEl) {
-        rationaleEl.style.display = 'block';
-        rationaleEl.innerHTML = `<strong>[작괘 근거 - AI 물상 분석]</strong><br>${result.rationale}`;
+    // Show loading
+    document.getElementById('situation-submit-btn').disabled = true;
+    document.getElementById('situation-submit-btn').innerText = "작괘 중...";
+    const loadingEl = document.getElementById('ai-loading');
+    if (loadingEl) {
+        loadingEl.style.display = 'block';
+        loadingEl.scrollIntoView({ behavior: 'smooth' });
     }
 
-    showInterpretation();
+    if (document.getElementById('ai-interpretation')) document.getElementById('ai-interpretation').style.display = 'none';
 
-    if (document.getElementById('ai-interpretation')) document.getElementById('ai-interpretation').style.display = 'block';
-    if (document.getElementById('ai-text')) document.getElementById('ai-text').innerText = result.explanation;
-    
-    currentState = 3;
-    drawBtn.style.display = 'none';
-    resetBtn.style.display = 'inline-block';
+    originalContainer.style.display = 'none';
+    transformedContainer.style.display = 'none';
+    interpretationContainer.style.display = 'none';
 
-    setTimeout(() => {
-        originalContainer.scrollIntoView({ behavior: 'smooth' });
-    }, 500);
+    const prompt = `사용자가 다음 상황에 대해 주역점을 치려고 합니다:\n"${text}"\n\n당신은 주역(I Ching)과 매화역수 등에 능통한 역학자입니다. 이 상황과 내용을 분석하여 가장 적절한 상괘(1~8), 하괘(1~8), 동효(1~6)를 도출해주세요. \n\n결과는 반드시 다음 형식의 JSON으로만 반환해주세요:\n{\n  "upper": 숫자(1~8),\n  "lower": 숫자(1~8),\n  "moving": 숫자(1~6),\n  "rationale": "왜 이 괘와 동효를 도출했는지에 대한 작괘 근거 및 상황 분석 (한국어)",\n  "explanation": "이 점괘가 현재 상황에 대해 주는 조언 및 해설 (한국어)"\n}`;
+
+    try {
+        const result = await callGeminiAPI(prompt);
+
+        divinationData.upper = result.upper;
+        divinationData.lower = result.lower;
+        divinationData.moving = result.moving;
+
+        // 결과 렌더링
+        originalContainer.style.display = 'block';
+        renderOriginal();
+        renderTransformed();
+        transformedContainer.style.display = 'block';
+
+        // 근거 텍스트 표시
+        const rationaleEl = document.getElementById('rationale-text');
+        if (rationaleEl) {
+            rationaleEl.style.display = 'block';
+            rationaleEl.innerHTML = `<strong>[작괘 근거 - AI 분석]</strong><br>${result.rationale}`;
+        }
+
+        // 전통 해설 렌더링
+        showInterpretation();
+        // AI 해설 표시 (직접 받아온 해설)
+
+        if (document.getElementById('ai-interpretation')) document.getElementById('ai-interpretation').style.display = 'block';
+        if (document.getElementById('ai-text')) document.getElementById('ai-text').innerText = result.explanation;
+
+        // 버튼 상태 업데이트: 다시 치기 버튼 표시
+        currentState = 3;
+        drawBtn.style.display = 'none';
+        resetBtn.style.display = 'inline-block';
+
+    } catch (error) {
+        alert(error.message);
+    } finally {
+        document.getElementById('situation-submit-btn').disabled = false;
+        document.getElementById('situation-submit-btn').innerText = "작괘하기 (作卦)";
+        if (loadingEl) loadingEl.style.display = 'none';
+    }
 }
 
-// ── 주사위 자동작괘 모드 제어 ──────────────────────────
 function handleDraw() {
     switch (currentState) {
-        case 0: drawUpper(); break;
-        case 1: drawLower(); break;
-        case 2: drawMoving(); break;
+        case 0:
+            drawUpper();
+            break;
+        case 1:
+            drawLower();
+            break;
+        case 2:
+            drawMoving();
+            break;
     }
 }
 
 function drawUpper() {
     divinationData.upper = Math.floor(Math.random() * 8) + 1;
     currentState = 1;
-    statusMsg.innerText = `상괘로 '${TRIGRAM_NAMES[divinationData.upper].name}(${TRIGRAM_NAMES[divinationData.upper].nature})'괘를 얻었습니다. 하괘를 뽑으세요.`;
+
+    statusMsg.innerText = `상괘로 '${TRIGRAM_NAMES[divinationData.upper].name}(${TRIGRAM_NAMES[divinationData.upper].nature})'괘를 얻었습니다. 이제 하괘를 뽑으세요.`;
     drawBtn.innerText = "하괘 뽑기";
+
     renderOriginal();
     originalContainer.style.display = 'block';
 }
@@ -288,47 +386,62 @@ function drawUpper() {
 function drawLower() {
     divinationData.lower = Math.floor(Math.random() * 8) + 1;
     currentState = 2;
+
     const hex = HEXAGRAM_TABLE[divinationData.upper][divinationData.lower];
-    statusMsg.innerText = `하괘로 '${TRIGRAM_NAMES[divinationData.lower].name}(${TRIGRAM_NAMES[divinationData.lower].nature})'괘를 얻어 '${hex.name}' 본괘가 완성되었습니다. 동효를 뽑으세요.`;
+    statusMsg.innerText = `하괘로 '${TRIGRAM_NAMES[divinationData.lower].name}(${TRIGRAM_NAMES[divinationData.lower].nature})'괘를 얻어 '${hex.name}' 본괘가 완성되었습니다. 마지막으로 동효를 뽑으세요.`;
     drawBtn.innerText = "동효 뽑기";
+
     renderOriginal();
 }
 
 function drawMoving() {
-    divinationData.moving = Math.floor(Math.random() * 6) + 1;
+    divinationData.moving = Math.floor(Math.random() * 6) + 1; // 1-6 (from bottom)
     currentState = 3;
+
     statusMsg.innerText = `${divinationData.moving}효가 변하여 본괘가 지괘로 바뀌었습니다. 결과를 확인하십시오.`;
     drawBtn.style.display = 'none';
     resetBtn.style.display = 'inline-block';
+
     renderOriginal();
     renderTransformed();
     transformedContainer.style.display = 'block';
+
+    // Display Interpretation
     showInterpretation();
 }
 
-// ── 공통: 해설 및 물상표 표출 ──────────────────────────
 function showInterpretation() {
     const originalHex = HEXAGRAM_TABLE[divinationData.upper][divinationData.lower];
     const hexId = originalHex.id.toString();
     const lineNum = divinationData.moving;
 
+    // 1. 해설 텍스트 구성
     let gwaesaText = "괘사 정보를 찾을 수 없습니다.";
     let hyosaText = "효사 정보를 찾을 수 없습니다.";
 
     if (typeof HEXAGRAM_LINES_TEXT !== 'undefined' && HEXAGRAM_LINES_TEXT[hexId]) {
-        if (HEXAGRAM_LINES_TEXT[hexId]["0"]) gwaesaText = HEXAGRAM_LINES_TEXT[hexId]["0"];
-        if (HEXAGRAM_LINES_TEXT[hexId][lineNum.toString()]) hyosaText = HEXAGRAM_LINES_TEXT[hexId][lineNum.toString()];
+        if (HEXAGRAM_LINES_TEXT[hexId]["0"]) {
+            gwaesaText = HEXAGRAM_LINES_TEXT[hexId]["0"];
+        }
+        if (HEXAGRAM_LINES_TEXT[hexId][lineNum.toString()]) {
+            hyosaText = HEXAGRAM_LINES_TEXT[hexId][lineNum.toString()];
+        }
     }
 
     interpretationText.innerText = "【 괘사 (卦辭) 】\n" + gwaesaText + "\n\n【 동효 (動爻) 】\n" + hyosaText;
 
+
+
+    // 2. 물상표 구성
     if (typeof TRIGRAM_PROPERTIES !== 'undefined') {
         let changedTrigramIdx = null;
         if (lineNum <= 3) {
+            // 하괘 변동
             const lowerLines = [...TRIGRAM_LINES[divinationData.lower]];
             lowerLines[lineNum - 1] = lowerLines[lineNum - 1] === 1 ? 0 : 1;
             changedTrigramIdx = findTrigramIndex(lowerLines);
         } else {
+            // 상괘 변동
             const upperLines = [...TRIGRAM_LINES[divinationData.upper]];
             upperLines[lineNum - 4] = upperLines[lineNum - 4] === 1 ? 0 : 1;
             changedTrigramIdx = findTrigramIndex(upperLines);
@@ -338,7 +451,7 @@ function showInterpretation() {
         const lProp = TRIGRAM_PROPERTIES[divinationData.lower];
         const cProp = TRIGRAM_PROPERTIES[changedTrigramIdx];
 
-        const propKeys = ["卦德", "人倫", "人品", "動物", "人體", "物色", "器물", "雜物"];
+        const propKeys = ["卦德", "人倫", "人品", "動物", "人體", "物色", "器物", "雜物"];
 
         let tableHtml = `
             <table class="properties-table">
@@ -366,19 +479,32 @@ function showInterpretation() {
         `;
         document.getElementById('properties-container').innerHTML = tableHtml;
     }
+
     interpretationContainer.style.display = 'block';
+
+
 }
+
+// 기존 함수는 이제 필요 없으므로 삭제합니다.
+
 
 function renderOriginal() {
     const visual = document.getElementById('original-visual');
     const nameEl = document.getElementById('original-name');
     const hanjaEl = document.getElementById('original-hanja');
+
     visual.innerHTML = '';
 
+    // TRIGRAM_LINES[n] = [하효, 중효, 상효]
+    // 상괘: index0=효4, index1=효5, index2=효6
+    // 하괘: index0=효1, index1=효2, index2=효3
+    // 화면은 위→아래: 효6, 효5, 효4, 효3, 효2, 효1
+
     if (divinationData.upper) {
+        // 상괘: 역순으로 효6,5,4
         const upperReversed = [...TRIGRAM_LINES[divinationData.upper]].reverse();
         upperReversed.forEach((lineType, index) => {
-            const lineNum = 6 - index;
+            const lineNum = 6 - index; // 6, 5, 4
             addLine(visual, lineType, lineNum === divinationData.moving);
         });
     } else {
@@ -391,9 +517,10 @@ function renderOriginal() {
     }
 
     if (divinationData.lower) {
+        // 하괘: 역순으로 효3,2,1
         const lowerReversed = [...TRIGRAM_LINES[divinationData.lower]].reverse();
         lowerReversed.forEach((lineType, index) => {
-            const lineNum = 3 - index;
+            const lineNum = 3 - index; // 3, 2, 1
             addLine(visual, lineType, lineNum === divinationData.moving);
         });
     } else {
@@ -416,20 +543,29 @@ function renderTransformed() {
     const visual = document.getElementById('transformed-visual');
     const nameEl = document.getElementById('transformed-name');
     const hanjaEl = document.getElementById('transformed-hanja');
+
     visual.innerHTML = '';
 
+    // TRIGRAM_LINES[n] = [하효, 중효, 상효] 순서
+    // 전체 효 배열: allLines[0]=효1 ~ allLines[5]=효6
     const allLines = [...TRIGRAM_LINES[divinationData.lower], ...TRIGRAM_LINES[divinationData.upper]];
+
     const transformedLines = allLines.map((line, index) => {
-        if (index + 1 === divinationData.moving) return line === 1 ? 0 : 1;
+        if (index + 1 === divinationData.moving) {
+            return line === 1 ? 0 : 1; // 동효: 음양 반전
+        }
         return line;
     });
 
+    // 화면에 그릴 때: 효6(상)부터 효1(하) 순서로 (위→아래)
     for (let i = 5; i >= 0; i--) {
         addLine(visual, transformedLines[i], false);
     }
 
-    const newLowerLines = transformedLines.slice(0, 3);
-    const newUpperLines = transformedLines.slice(3, 6);
+    // 지괘 계산
+    const newLowerLines = transformedLines.slice(0, 3); // 효1~3 = [하효,중효,상효] 형식 그대로
+    const newUpperLines = transformedLines.slice(3, 6); // 효4~6
+
     const newLowerIdx = findTrigramIndex(newLowerLines);
     const newUpperIdx = findTrigramIndex(newUpperLines);
 
@@ -446,7 +582,9 @@ function addLine(container, type, isMoving) {
 
 function findTrigramIndex(lines) {
     for (let i = 1; i <= 8; i++) {
-        if (JSON.stringify(TRIGRAM_LINES[i]) === JSON.stringify(lines)) return i;
+        if (JSON.stringify(TRIGRAM_LINES[i]) === JSON.stringify(lines)) {
+            return i;
+        }
     }
     return null;
 }
@@ -474,12 +612,13 @@ function reset() {
         rationaleEl.style.display = 'none';
         rationaleEl.innerHTML = '';
     }
+
     if (document.getElementById('ai-interpretation')) document.getElementById('ai-interpretation').style.display = 'none';
+
     if (document.getElementById('ai-loading')) document.getElementById('ai-loading').style.display = 'none';
 }
 
 function init() {
-    console.log("주역점 앱 초기화...");
     drawBtn = document.getElementById('draw-btn');
     resetBtn = document.getElementById('reset-btn');
     statusMsg = document.getElementById('status-msg');
@@ -488,11 +627,16 @@ function init() {
     interpretationContainer = document.getElementById('interpretation-container');
     interpretationText = document.getElementById('interpretation-text');
 
+    if (drawBtn) drawBtn.addEventListener('click', handleDraw);
+    if (resetBtn) resetBtn.addEventListener('click', reset);
+
+    // 파이썬에서 주입된 AI 결과가 있는지 확인
     if (window.AI_INJECT_DATA) {
         handleInjectedAIResult(window.AI_INJECT_DATA);
     }
 }
 
+// DOM이 완전히 로드된 후 초기화 수행
 if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', init);
 } else {
