@@ -591,114 +591,39 @@ h1 {
  
 /* ── 십익 버튼 ── */
 .btn-classic {
-    background: transparent;
-    border: 1px solid rgba(212, 175, 55, 0.5);
+    background: linear-gradient(135deg, rgba(212,175,55,0.15), rgba(212,175,55,0.05));
+    border: 1px solid rgba(212, 175, 55, 0.6);
     color: var(--gold);
-    padding: 6px 16px;
-    font-family: inherit;
-    font-size: 1rem;
-    letter-spacing: 0.15rem;
+    padding: 8px 20px;
+    font-family: 'Noto Serif KR', serif;
+    font-size: 1.1rem;
+    letter-spacing: 0.3rem;
     cursor: pointer;
-    border-radius: 20px;
+    border-radius: 25px;
     transition: all 0.3s ease;
+    box-shadow: 0 0 8px rgba(212,175,55,0.15), inset 0 0 8px rgba(212,175,55,0.05);
+    position: relative;
+    overflow: hidden;
+}
+.btn-classic::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, rgba(212,175,55,0.2), transparent);
+    opacity: 0;
+    transition: opacity 0.3s ease;
 }
 .btn-classic:hover {
-    background: rgba(212, 175, 55, 0.12);
+    background: linear-gradient(135deg, rgba(212,175,55,0.3), rgba(212,175,55,0.1));
     border-color: var(--gold);
-    box-shadow: 0 0 10px var(--gold-glow);
+    box-shadow: 0 0 18px rgba(212,175,55,0.4), inset 0 0 12px rgba(212,175,55,0.1);
+    transform: translateY(-1px);
+    letter-spacing: 0.4rem;
 }
-
-/* ── 십익 모달 ── */
-.classics-modal {
-    position: fixed;
-    inset: 0;
-    background: rgba(0,0,0,0.75);
-    z-index: 1000;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    backdrop-filter: blur(4px);
-    animation: fadeIn 0.25s ease;
+.btn-classic:hover::before {
+    opacity: 1;
 }
-.classics-modal-inner {
-    background: #0f0f1a;
-    border: 1px solid rgba(212, 175, 55, 0.35);
-    border-radius: 16px;
-    width: 90%;
-    max-width: 750px;
-    max-height: 85vh;
-    display: flex;
-    flex-direction: column;
-    box-shadow: 0 20px 60px rgba(0,0,0,0.7);
+.btn-classic:active {
+    transform: translateY(0);
+    box-shadow: 0 0 10px rgba(212,175,55,0.3);
 }
-.classics-modal-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 20px 25px 15px;
-    border-bottom: 1px solid rgba(212, 175, 55, 0.2);
-    flex-shrink: 0;
-}
-.classics-modal-header h2 {
-    color: var(--gold);
-    font-size: 1.4rem;
-    letter-spacing: 0.3rem;
-    margin: 0;
-}
-.classics-close-btn {
-    background: none;
-    border: none;
-    color: var(--text-secondary);
-    font-size: 1.3rem;
-    cursor: pointer;
-    padding: 4px 8px;
-    border-radius: 6px;
-    transition: all 0.2s;
-}
-.classics-close-btn:hover {
-    color: var(--gold);
-    background: rgba(212,175,55,0.1);
-}
-.classics-tabs {
-    display: flex;
-    gap: 6px;
-    padding: 15px 20px 10px;
-    flex-wrap: wrap;
-    flex-shrink: 0;
-    border-bottom: 1px solid rgba(212, 175, 55, 0.1);
-}
-.classics-tab-btn {
-    background: transparent;
-    border: 1px solid rgba(212, 175, 55, 0.25);
-    color: var(--text-secondary);
-    padding: 6px 14px;
-    font-family: inherit;
-    font-size: 0.85rem;
-    cursor: pointer;
-    border-radius: 20px;
-    transition: all 0.2s ease;
-    white-space: nowrap;
-}
-.classics-tab-btn:hover {
-    border-color: var(--gold);
-    color: var(--text-primary);
-}
-.classics-tab-btn.active {
-    border-color: var(--gold);
-    color: var(--gold);
-    background: rgba(212, 175, 55, 0.1);
-}
-.classics-content {
-    padding: 20px 25px;
-    overflow-y: auto;
-    flex: 1;
-    line-height: 1.9;
-    font-size: 0.95rem;
-    color: var(--text-primary);
-    white-space: pre-wrap;
-    word-break: break-all;
-    text-align: left;
-}
-.classics-content::-webkit-scrollbar { width: 5px; }
-.classics-content::-webkit-scrollbar-track { background: rgba(0,0,0,0.2); }
-.classics-content::-webkit-scrollbar-thumb { background: var(--gold); border-radius: 3px; }
