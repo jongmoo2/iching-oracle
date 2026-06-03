@@ -697,6 +697,7 @@ h1 {
     color: var(--text-primary);
     white-space: pre-wrap;
     word-break: break-all;
+    text-align: left;
 }
 .classics-content::-webkit-scrollbar { width: 5px; }
 .classics-content::-webkit-scrollbar-track { background: rgba(0,0,0,0.2); }
