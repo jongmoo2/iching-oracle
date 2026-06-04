@@ -714,13 +714,18 @@ if (document.readyState === 'loading') {
 }
 
 // ── 십익(十翼) 모달 ──────────────────────────────────────
-const CLASSICS_ORDER = ['繫辭上傳','繫辭下傳','說卦傳','序卦傳','雜卦傳'];
-let currentClassicsTab = CLASSICS_ORDER[0];
+let CLASSICS_ORDER = [];
+let currentClassicsTab = null;
 
 function openClassics() {
     const modal = document.getElementById('classics-modal');
     if (!modal) { console.error('classics-modal 요소 없음'); return; }
     if (typeof CLASSICS_TEXT === 'undefined') { console.error('CLASSICS_TEXT 미정의'); return; }
+
+    if (CLASSICS_ORDER.length === 0) {
+        CLASSICS_ORDER = Object.keys(CLASSICS_TEXT);
+        currentClassicsTab = CLASSICS_ORDER[0];
+    }
 
     const tabsEl = document.getElementById('classics-tabs');
     if (tabsEl && !tabsEl.hasChildNodes()) {

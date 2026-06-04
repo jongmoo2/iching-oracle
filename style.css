@@ -715,5 +715,17 @@ h1 {
     line-height: 1.8;
     font-size: 1.05rem;
     white-space: pre-wrap;
+    text-align: left;
+}
+
+.classics-content::-webkit-scrollbar {
+    width: 6px;
+}
+.classics-content::-webkit-scrollbar-track {
+    background: rgba(0, 0, 0, 0.2);
+}
+.classics-content::-webkit-scrollbar-thumb {
+    background: var(--gold);
+    border-radius: 3px;
 }
 
