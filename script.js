@@ -177,12 +177,18 @@ function switchMode(mode) {
 
     document.getElementById('tab-random').classList.toggle('active', mode === 'random');
     document.getElementById('tab-manual').classList.toggle('active', mode === 'manual');
+    document.getElementById('tab-time').classList.toggle('active', mode === 'time');
     document.getElementById('tab-situation').classList.toggle('active', mode === 'situation');
 
     document.getElementById('manual-area').style.display = mode === 'manual' ? 'block' : 'none';
+    document.getElementById('time-area').style.display = mode === 'time' ? 'block' : 'none';
     document.getElementById('situation-area').style.display = mode === 'situation' ? 'block' : 'none';
     document.getElementById('random-controls').style.display = mode === 'random' ? 'flex' : 'none';
     statusMsg.style.display = mode === 'random' ? 'block' : 'none';
+
+    if (mode === 'time') {
+        updateLiveTimeDisplay();
+    }
 
     // 상황작괘 탭의 안내 문구 업데이트
     if (mode === 'situation') {
@@ -197,6 +203,70 @@ function switchMode(mode) {
     // 결과 영역 초기화
     reset();
     if (mode === 'manual') resetManual();
+}
+
+// ── 시간작괘 모드 ──────────────────────────────────────
+function updateLiveTimeDisplay() {
+    const timeEl = document.getElementById('time-display');
+    if (!timeEl) return;
+    const now = new Date();
+    timeEl.innerText = `현재 시각: ${now.getFullYear()}년 ${now.getMonth() + 1}월 ${now.getDate()}일 ${now.getHours()}시`;
+}
+
+function submitTimeDivination() {
+    const now = new Date();
+    const Y = now.getFullYear();
+    const M = now.getMonth() + 1;
+    const D = now.getDate();
+    const H = now.getHours();
+
+    // 현대 기조식 서기 연도 결합 공식
+    let upperIdx = (Y + M + D) % 8;
+    if (upperIdx === 0) upperIdx = 8;
+
+    let lowerIdx = (Y + M + D + H) % 8;
+    if (lowerIdx === 0) lowerIdx = 8;
+
+    let movingIdx = (Y + M + D + H) % 6;
+    if (movingIdx === 0) movingIdx = 6;
+
+    divinationData.upper = upperIdx;
+    divinationData.lower = lowerIdx;
+    divinationData.moving = movingIdx;
+
+    // 결과 렌더링
+    originalContainer.style.display = 'block';
+    renderOriginal();
+    renderTransformed();
+    transformedContainer.style.display = 'block';
+
+    const rationaleEl = document.getElementById('rationale-text');
+    if (rationaleEl) {
+        rationaleEl.style.display = 'block';
+        rationaleEl.innerHTML = `
+            <strong>[작괘 근거 - 시간 연산]</strong><br>
+            - 기준 연월일시: 서기 ${Y}년 ${M}월 ${D}일 ${H}시<br>
+            - 상괘 연산: (${Y} + ${M} + ${D}) % 8 = 나머지 ${upperIdx} (${TRIGRAM_NAMES[upperIdx].name}·${TRIGRAM_NAMES[upperIdx].nature})<br>
+            - 하괘 연산: (${Y} + ${M} + ${D} + ${H}) % 8 = 나머지 ${lowerIdx} (${TRIGRAM_NAMES[lowerIdx].name}·${TRIGRAM_NAMES[lowerIdx].nature})<br>
+            - 동효 연산: (${Y} + ${M} + ${D} + ${H}) % 6 = 나머지 ${movingIdx}효 동(動)
+        `;
+    }
+
+    showInterpretation();
+    
+    // 시간작괘는 로컬 순수 연산이므로 AI 해설창을 숨김
+    if (document.getElementById('ai-interpretation')) {
+        document.getElementById('ai-interpretation').style.display = 'none';
+    }
+
+    // 버튼 상태 업데이트
+    currentState = 3;
+    drawBtn.style.display = 'none';
+    resetBtn.style.display = 'inline-block';
+
+    setTimeout(() => {
+        originalContainer.scrollIntoView({ behavior: 'smooth' });
+    }, 300);
 }
 
 // ── 수동 모드: 괘 선택 ──────────────────────────────────
