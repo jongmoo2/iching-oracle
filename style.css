@@ -627,3 +627,93 @@ h1 {
     transform: translateY(0);
     box-shadow: 0 0 10px rgba(212,175,55,0.3);
 }
+
+/* ── 십익(十翼) 모달 창 ── */
+.classics-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.7);
+    backdrop-filter: blur(5px);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.classics-modal-inner {
+    background: var(--card-bg);
+    border: 1px solid var(--gold);
+    border-radius: 15px;
+    width: 90%;
+    max-width: 700px;
+    max-height: 80vh;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.8);
+    overflow: hidden;
+}
+
+.classics-modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px;
+    border-bottom: 1px solid rgba(212, 175, 55, 0.3);
+}
+
+.classics-modal-header h2 {
+    color: var(--gold);
+    margin: 0;
+    font-size: 1.5rem;
+}
+
+.classics-close-btn {
+    background: none;
+    border: none;
+    color: var(--gold);
+    font-size: 1.5rem;
+    cursor: pointer;
+}
+
+.classics-tabs {
+    display: flex;
+    overflow-x: auto;
+    border-bottom: 1px solid rgba(212, 175, 55, 0.3);
+    background: rgba(0, 0, 0, 0.2);
+}
+
+.classics-tab-btn {
+    background: none;
+    border: none;
+    color: var(--text-secondary);
+    padding: 12px 20px;
+    font-family: inherit;
+    font-size: 1rem;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: all 0.3s ease;
+}
+
+.classics-tab-btn:hover {
+    color: var(--text-primary);
+    background: rgba(212, 175, 55, 0.1);
+}
+
+.classics-tab-btn.active {
+    color: var(--gold);
+    border-bottom: 2px solid var(--gold);
+    background: rgba(212, 175, 55, 0.15);
+}
+
+.classics-content {
+    padding: 20px;
+    overflow-y: auto;
+    color: var(--text-primary);
+    line-height: 1.8;
+    font-size: 1.05rem;
+    white-space: pre-wrap;
+}
+
