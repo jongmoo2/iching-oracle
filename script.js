@@ -649,7 +649,8 @@ let currentClassicsTab = CLASSICS_ORDER[0];
 
 function openClassics() {
     const modal = document.getElementById('classics-modal');
-    if (!modal) { console.error('classics-modal 없음'); return; }
+    if (!modal) { console.error('classics-modal 요소 없음'); return; }
+    if (typeof CLASSICS_TEXT === 'undefined') { console.error('CLASSICS_TEXT 미정의'); return; }
 
     const tabsEl = document.getElementById('classics-tabs');
     if (tabsEl && !tabsEl.hasChildNodes()) {
@@ -661,7 +662,6 @@ function openClassics() {
             tabsEl.appendChild(btn);
         });
     }
-
     showClassicsTab(currentClassicsTab);
     modal.style.display = 'flex';
     document.body.style.overflow = 'hidden';
