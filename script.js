@@ -739,13 +739,20 @@ function openClassics() {
     }
     showClassicsTab(currentClassicsTab);
 
-    // Streamlit iframe 환경 대응: 모달 열기 전 맨 위로 스크롤하고 높이를 동적으로 계산
-    window.scrollTo(0, 0);
-    const vh = window.innerHeight;
+    // Streamlit iframe 대응: 실제 브라우저 뷰포트 높이 및 스크롤 처리
+    let actualViewportHeight = window.innerHeight;
+    try {
+        // Streamlit iframe은 allow-same-origin이 있어 부모 창 접근 가능
+        actualViewportHeight = window.parent.innerHeight;
+        window.parent.scrollTo(0, 0); // 브라우저(부모)도 최상단으로
+    } catch(e) {}
+    window.scrollTo(0, 0); // iframe 내부도 최상단으로
+
+    // 모달 내용창 높이를 실제 브라우저 뷰포트 기준으로 동적 설정
     const inner = document.querySelector('.classics-modal-inner');
     if (inner) {
-        inner.style.height = (vh - 40) + 'px';
-        inner.style.maxHeight = (vh - 40) + 'px';
+        inner.style.height = (actualViewportHeight - 40) + 'px';
+        inner.style.maxHeight = (actualViewportHeight - 40) + 'px';
     }
 
     modal.style.display = 'flex';
