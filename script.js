@@ -762,8 +762,8 @@ function openClassics() {
     modal.style.paddingTop = '20px';
     const inner = document.querySelector('.classics-modal-inner');
     if (inner) {
-        inner.style.height = (actualViewportHeight - 40) + 'px';
-        inner.style.maxHeight = (actualViewportHeight - 40) + 'px';
+        inner.style.height = (actualViewportHeight - 100) + 'px';
+        inner.style.maxHeight = (actualViewportHeight - 100) + 'px';
     }
 
     modal.style.display = 'flex';
