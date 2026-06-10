@@ -738,6 +738,16 @@ function openClassics() {
         });
     }
     showClassicsTab(currentClassicsTab);
+
+    // Streamlit iframe 환경 대응: 모달 열기 전 맨 위로 스크롤하고 높이를 동적으로 계산
+    window.scrollTo(0, 0);
+    const vh = window.innerHeight;
+    const inner = document.querySelector('.classics-modal-inner');
+    if (inner) {
+        inner.style.height = (vh - 40) + 'px';
+        inner.style.maxHeight = (vh - 40) + 'px';
+    }
+
     modal.style.display = 'flex';
     document.body.style.overflow = 'hidden';
 }
