@@ -739,16 +739,27 @@ function openClassics() {
     }
     showClassicsTab(currentClassicsTab);
 
-    // Streamlit iframe 대응: 실제 브라우저 뷰포트 높이 및 스크롤 처리
+    // Streamlit iframe 대응: iframe의 절대 위치를 찾아 부모 창을 그 위치로 스크롤
     let actualViewportHeight = window.innerHeight;
     try {
-        // Streamlit iframe은 allow-same-origin이 있어 부모 창 접근 가능
         actualViewportHeight = window.parent.innerHeight;
-        window.parent.scrollTo(0, 0); // 브라우저(부모)도 최상단으로
+        // 현재 iframe의 부모 페이지 내 절대 Y 위치를 계산
+        const iframes = window.parent.document.querySelectorAll('iframe');
+        for (const iframe of iframes) {
+            if (iframe.contentWindow === window) {
+                const rect = iframe.getBoundingClientRect();
+                const iframeAbsTop = rect.top + window.parent.scrollY;
+                // 부모 창을 iframe 최상단이 브라우저 최상단에 오도록 스크롤
+                window.parent.scrollTo(0, iframeAbsTop);
+                break;
+            }
+        }
     } catch(e) {}
-    window.scrollTo(0, 0); // iframe 내부도 최상단으로
+    window.scrollTo(0, 0);
 
-    // 모달 내용창 높이를 실제 브라우저 뷰포트 기준으로 동적 설정
+    // 모달을 상단 정렬로 변경하고 높이를 실제 브라우저 뷰포트 기준으로 설정
+    modal.style.alignItems = 'flex-start';
+    modal.style.paddingTop = '20px';
     const inner = document.querySelector('.classics-modal-inner');
     if (inner) {
         inner.style.height = (actualViewportHeight - 40) + 'px';
